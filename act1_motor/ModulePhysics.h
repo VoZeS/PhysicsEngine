@@ -1,6 +1,7 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include "p2List.h"
 
 #define MIN_ANGLE -(M_PI/2)+0.2
 #define MAX_ANGLE -0.2
@@ -19,15 +20,15 @@ struct Ball
 {
 	SDL_Rect ballRect;
 
-	double mass, 
-		acc, accX, accY,
-		vel, velX, velY,
-		fX, fY;
+	double mass = 10, 
+		acc = 0, accX = 0, accY = 0,
+		vel = 0, velX = 0, velY = 0,
+		fX = 0, fY = 0;
 
 	//Aerodynamics Stuff
-	double surface; //Effective wet surface
-	double cl; // Lift coefficient
-	double cd; // Drag coefficient
+	double surface = 0; //Effective wet surface
+	double cl = 0; // Lift coefficient
+	double cd = 0; // Drag coefficient
 
 	// Has physics enabled?
 	bool physics_enabled = true;
@@ -36,6 +37,7 @@ struct Ball
 struct Canon
 {
 	SDL_Rect canonBody;
+	
 
 	float angle = MAX_ANGLE;
 };
@@ -44,11 +46,11 @@ struct Wall
 {
 	SDL_Rect body;
 
-	double mass,
-		acc, accX, accY,
-		vel, velX, velY,
-		fX, fY,
-		restitutionX, restitutionY;
+	double mass = 100,
+		acc = 0, accX = 0, accY = 0,
+		vel = 0, velX = 0, velY = 0,
+		fX = 0, fY = 0,
+		restitutionX = 0, restitutionY = 0;
 };
 
 
@@ -64,59 +66,63 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	void EulerBWDIntegrator(Ball &ball, double dt)
+	void EulerBWDIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
-		ball.ballRect.x += ball.velX * dt;
-		ball.ballRect.y += ball.velY * dt;
-		ball.velX += ball.accX * dt;
-		ball.velY += ball.accY * dt;
+		ball->data->ballRect.x += ball->data->velX * dt;
+		ball->data->ballRect.y += ball->data->velY * dt;
+		ball->data->velX += ball->data->accX * dt;
+		ball->data->velY += ball->data->accY * dt;
 	}
-	void EulerFWDIntegrator(Ball& ball, double dt)
+	void EulerFWDIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
-		ball.velX += ball.accX * dt;
-		ball.velY += ball.accY * dt;
-		ball.ballRect.x += ball.velX * dt;
-		ball.ballRect.y += ball.velY * dt;
+		ball->data->velX += ball->data->accX * dt;
+		ball->data->velY += ball->data->accY * dt;
+		ball->data->ballRect.x += ball->data->velX * dt;
+		ball->data->ballRect.y += ball->data->velY * dt;
 	}
 
-	void VelocityVerletIntegrator(Ball &ball, double dt)
+	void VelocityVerletIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
-		ball.ballRect.x += ball.velX * dt + 0.5 * ball.accX * dt * dt;
-		ball.ballRect.y += ball.velY * dt + 0.5 * ball.accY * dt * dt;
-		ball.velX += ball.accX * dt;
-		ball.velY += ball.accY * dt;
+		ball->data->ballRect.x += ball->data->velX * dt + 0.5 * ball->data->accX * dt * dt;
+		ball->data->ballRect.y += ball->data->velY * dt + 0.5 * ball->data->accY * dt * dt;
+		ball->data->velX += ball->data->accX * dt;
+		ball->data->velY += ball->data->accY * dt;
 	}
 
 	float Ft = 0, Fg = 0, Fd = 0, Fl = 0, Fb = 0, Fk = 0;
-	float g;
+	float g = 0;
+	double initialVelocity = 10;
 
-	Ball ball;
 	Canon canon;
 	Wall ground;
 	Wall wall1;
 
-	p2List<Ball*>* ball_list;
-	Ball* CreateBall(int x, int y, int w, int h) {
+	p2List<Ball*>* ball_list = new p2List<Ball*>();
+
+	Ball* CreateBall(int x, int y, int w, int h, int mass, int vel) {
 		Ball* b = new Ball();
-		//Omplir els valors de la bola
+
+		//Omplim els valors de la bola
 		b->ballRect.x = x;
 		b->ballRect.y = y;
 		b->ballRect.w = w;
 		b->ballRect.h = h;
+		b->mass = mass;
+
+
+		b->velY = sin(canon.angle) * vel;
+		b->velX = cos(canon.angle) * vel;
 
 		ball_list->add(b);
+		
 		return b;
 	}
 
-	p2List_item<Ball*>* current_ball = ball_list->getFirst();
-	
-	//current_ball = current_ball->next;
+	p2List_item<Ball*>* current_ball;
 
 	integrator inte = EULER_BACK;
 	double dt = 1;
 private:
-
-	bool prep = true;
 
 	bool debug;
 };

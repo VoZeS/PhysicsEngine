@@ -39,12 +39,6 @@ bool ModuleSceneIntro::Start()
 	App->physics->canon.canonBody.y = SCREEN_HEIGHT - App->physics->ground.body.h - 50;
 	App->physics->canon.canonBody.w = 50;
 
-	//Set ball body
-	App->physics->ball.ballRect.x = App->physics->canon.canonBody.x;
-	App->physics->ball.ballRect.y = SCREEN_HEIGHT - App->physics->ground.body.h;
-	App->physics->ball.ballRect.h = 5;
-	App->physics->ball.ballRect.w = 5;
-
 	return ret;
 }
 
@@ -64,7 +58,15 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->DrawQuad(App->physics->wall1.body, 0, 255, 255, alpha);
 
 	App->renderer->DrawQuad(App->physics->canon.canonBody, 255, 0, 255, 255);
-	App->renderer->DrawQuad(App->physics->ball.ballRect, 255, 255, 0, 255);
+
+	App->physics->current_ball = App->physics->ball_list->getFirst();
+	while (App->physics->current_ball != NULL)
+	{
+
+		App->renderer->DrawCircle(App->physics->current_ball->data->ballRect.x, App->physics->current_ball->data->ballRect.y, 10, 255, 255, 0, 255);
+
+		App->physics->current_ball = App->physics->current_ball->next;
+	}
 
 	return UPDATE_CONTINUE;
 }
