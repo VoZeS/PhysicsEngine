@@ -36,6 +36,7 @@ struct Light
 	lightTypes type;
 	PhysBody* body;
 	SDL_Texture* texture;
+	
 	bool on;
 	uint fx;
 	int x, y;
@@ -53,7 +54,7 @@ public:
 
 
 public:
-
+	SDL_Rect screen;
 	SDL_Texture* graphics;
 	PhysBody* background;
 
@@ -66,7 +67,8 @@ public:
 	SDL_Texture* tex_light_tiny;
 	SDL_Texture* tex_light_medium;
 	SDL_Texture* tex_light_big;
-	
+	SDL_Texture* backgroundTex;
+
 	uint fx_light_tiny;
 	uint fx_light_medium;
 	uint fx_light_big;

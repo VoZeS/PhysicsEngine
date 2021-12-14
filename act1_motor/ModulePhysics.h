@@ -45,7 +45,6 @@ struct Canon
 struct Wall
 {
 	SDL_Rect body;
-
 	double mass = 100,
 		acc = 0, accX = 0, accY = 0,
 		vel = 0, velX = 0, velY = 0,
@@ -53,6 +52,12 @@ struct Wall
 		restitutionX = 0, restitutionY = 0;
 };
 
+struct Water
+{
+	SDL_Rect waterBody;
+
+
+};
 
 class ModulePhysics : public Module
 {
@@ -93,10 +98,10 @@ public:
 	float g = 0;
 	double initialVelocity = 10;
 
-	Canon canon;
-	Wall ground;
-	Wall wall1;
-
+	Canon canon, canon2;
+	Wall ground1, ground2;
+	Wall wall1, iceberg;
+	Water lake;
 	p2List<Ball*>* ball_list = new p2List<Ball*>();
 
 	Ball* CreateBall(int x, int y, int w, int h, int mass, int vel) {
