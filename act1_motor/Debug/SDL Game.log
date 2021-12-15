@@ -1,12 +1,14 @@
 ﻿  ModulePhysics.cpp
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(42,14): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(76,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(77,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(85,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(86,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(91,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(92,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(117,21): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(123,21): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(146,64): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
-  SDL Game.vcxproj -> C:\Users\erikmg\Documents\GitHub\PhysicsEngine\act1_motor\Debug\Physics 2 Class 1 Handout.exe
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(42,14): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(80,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(81,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(89,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(90,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(95,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(96,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(116,12): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(111,21): warning C4305: '-=': truncamiento de 'double' a 'float'
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(117,21): warning C4305: '+=': truncamiento de 'double' a 'float'
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(195,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(196,17): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
+  SDL Game.vcxproj -> C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\Debug\Physics 2 Class 1 Handout.exe

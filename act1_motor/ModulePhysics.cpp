@@ -5,6 +5,7 @@
 #include "math.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -21,29 +22,22 @@ bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
 
-	// Ground1 Propierties
-	ground1.mass = 1000; //Kg
-	ground1.vel = 0;
-	ground1.velX = 0;
-	ground1.velY = 0;
-	ground1.restitutionX = 0.4;
-	ground1.restitutionY = 0.6;
+	// ----------------------------------------------------------------------------------------------- CREATE TERRAIN
+		// ----------------------------------------------------------------------------- WATER
+	CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50, 100, 0, 0.8, 0.6,
+		100, 100, 255, 100);
 
-	// Ground2 Propierties
-	ground2.mass = 1000; //Kg
-	ground2.vel = 0;
-	ground2.velX = 0;
-	ground2.velY = 0;
-	ground2.restitutionX = 0.4;
-	ground2.restitutionY = 0.6;
+	// ----------------------------------------------------------------------------- GROUND 1
+	CreateTerrain(0, SCREEN_HEIGHT - 50 , SCREEN_WIDTH / 5, 50, 1000, 0, 0.4, 0.5,
+		0, 255, 255, 255);
 
-	// Wall Propierties
-	iceberg.mass = 100; //Kg
-	iceberg.vel = 0;
-	iceberg.velX = 0;
-	iceberg.velY = 0;
-	iceberg.restitutionX = 0.8;
-	iceberg.restitutionY = 0.6;
+	// ----------------------------------------------------------------------------- GROUND 2
+	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50, SCREEN_WIDTH / 5, 50, 1000, 0, 0.4, 0.5,
+		0, 255, 255, 255);
+
+	// ----------------------------------------------------------------------------- WALL
+	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200, 120, 200, 100, 0, 0.5, 1.5,
+		255, 0, 255, 255);
 	
 	return true;
 }
@@ -143,7 +137,7 @@ update_status ModulePhysics::Update()
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 	{
 		printf("Shot\n");
-		CreateBall(canon.canonBody.x, canon.canonBody.y, 10, 10, 10, initialVelocity);
+		CreateBall(canon.canonBody.x, canon.canonBody.y, 10, 10, initialVelocity);
 	}
 
 	current_ball = ball_list->getFirst();
@@ -183,50 +177,93 @@ update_status ModulePhysics::PostUpdate()
 
 	while (current_ball != NULL)
 	{
+		current_terrain = terrain_list->getFirst();
 
-		// Step #4: solve collisions
-		// GROUND1 COLL
-		if (current_ball->data->ballRect.y >= App->physics->ground1.body.y)
+		while (current_terrain != NULL)
 		{
-			current_ball->data->ballRect.y = App->physics->ground1.body.y;
+			// Step #4: solve collisions
+			// Calculations:
+			// - deltaX = X distance between ball's center and terrain's center
+			// - deltaY = Y distance between ball's center and terrain's center
+			// - intersectX = Sees if the X distance between ball's center and terrain's center --deltaX-- 
+			// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+			// This is checked later in an if
+			// - intersectY = Sees if the Y distance between ball's center and terrain's center --deltaY-- 
+			// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+			// This is checked later in an if
 
-			current_ball->data->velX = ((current_ball->data->velX * (ground1.mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + ground1.mass)) * ground1.restitutionX;
-			current_ball->data->velY = -((current_ball->data->velY * (ground1.mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + ground1.mass)) * ground1.restitutionY;
+			float deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (current_terrain->data->x + current_terrain->data->w / 2);
+			float deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (current_terrain->data->y + current_terrain->data->h / 2);
+			float intersectX = abs(deltaX) - ((current_ball->data->rad / 2) + (current_terrain->data->w / 2));
+			float intersectY = abs(deltaY) - ((current_ball->data->rad / 2) + (current_terrain->data->h / 2));
 
-			if (current_ball->data->velY < 5 && current_ball->data->velY > -5) current_ball->data->velY = 0;
-			if (current_ball->data->velX < 0.01 && current_ball->data->velX > -0.01) current_ball->data->velX = 0;
+			// Is one body inside of the other?
+			if (intersectX < 0.0f && intersectY < 0.0f)
+			{
+				// Is the X intersection higher? If so, they are colliding from the sides!
+				if (intersectX > intersectY)
+				{
+					// Is the X distance between ball's center and terrain's center --deltaX-- positive?
+					// If so, is colliding from the RIGHT!
+					if (deltaX > 0.0f)
+					{
+						current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad;
 
-			current_ball->data->physics_enabled = false;
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+						current_ball->data->physics_enabled = false;
+					}
+					// Is the X distance between ball's center and terrain's center --deltaX-- positive? 
+					// If NOT, is colliding from the LEFT!
+					else
+					{
+						current_ball->data->x = current_terrain->data->x - current_ball->data->rad;
+
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+						current_ball->data->physics_enabled = false;
+					}
+				}
+				// Is the X intersection higher? If NOT, they are colliding UP or DOWN!
+				else
+				{
+					// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
+					// If so, is colliding from DOWN!
+					if (deltaY > 0.0f)
+					{
+						current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad;
+
+						current_ball->data->y = current_terrain->data->y;
+
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+						current_ball->data->physics_enabled = false;
+
+					}
+					// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
+					// If NOT, is colliding from UP!
+					else
+					{
+						current_ball->data->y = current_terrain->data->y - current_ball->data->rad;
+
+						current_ball->data->y = current_terrain->data->y;
+
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
+				}
+			}
+			current_terrain = current_terrain->next;
 		}
-
-		// GROUND2 COLL
-		if (current_ball->data->ballRect.y >= App->physics->ground2.body.y)
-		{
-			current_ball->data->ballRect.y = App->physics->ground2.body.y;
-
-			current_ball->data->velX = ((current_ball->data->velX * (ground2.mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + ground2.mass)) * ground2.restitutionX;
-			current_ball->data->velY = -((current_ball->data->velY * (ground2.mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + ground2.mass)) * ground2.restitutionY;
-
-			if (current_ball->data->velY < 5 && current_ball->data->velY > -5) current_ball->data->velY = 0;
-			if (current_ball->data->velX < 0.01 && current_ball->data->velX > -0.01) current_ball->data->velX = 0;
-
-			current_ball->data->physics_enabled = false;
-		}
-
-		// ICEBERG COLL
-		if (current_ball->data->ballRect.y >= App->physics->iceberg.body.y &&
-			current_ball->data->ballRect.y <= (App->physics->iceberg.body.y + App->physics->iceberg.body.h) &&
-			current_ball->data->ballRect.x >= App->physics->iceberg.body.x &&
-			current_ball->data->ballRect.x <= (App->physics->iceberg.body.x + App->physics->iceberg.body.w))
-		{
-			current_ball->data->ballRect.x = App->physics->iceberg.body.x;
-
-			current_ball->data->velX = -((current_ball->data->velX * (iceberg.mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + iceberg.mass)) * iceberg.restitutionX;
-			current_ball->data->velY = ((current_ball->data->velY * (iceberg.mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + iceberg.mass)) * iceberg.restitutionY;
-
-			current_ball->data->physics_enabled = false;
-		}
-
 		current_ball = current_ball->next;
 	}
 	

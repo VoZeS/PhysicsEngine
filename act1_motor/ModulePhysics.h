@@ -6,7 +6,7 @@
 #define MIN_ANGLE -(M_PI/2)+0.2
 #define MAX_ANGLE -0.2
 
-#define MAX_VEL 50
+#define MAX_VEL 40
 #define MIN_VEL 10
 
 enum integrator
@@ -18,7 +18,7 @@ enum integrator
 
 struct Ball
 {
-	SDL_Rect ballRect;
+	int x, y, rad;
 
 	double mass = 10, 
 		acc = 0, accX = 0, accY = 0,
@@ -42,14 +42,18 @@ struct Canon
 	float angle = MAX_ANGLE;
 };
 
-struct Wall
+struct Terrain
 {
-	SDL_Rect body;
+	int x, y, w, h;
+
 	double mass = 100,
 		acc = 0, accX = 0, accY = 0,
 		vel = 0, velX = 0, velY = 0,
 		fX = 0, fY = 0,
 		restitutionX = 0, restitutionY = 0;
+
+	// Aesthetics
+	uint r, g, b, a;
 };
 
 struct Water
@@ -73,8 +77,8 @@ public:
 
 	void EulerBWDIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
-		ball->data->ballRect.x += ball->data->velX * dt;
-		ball->data->ballRect.y += ball->data->velY * dt;
+		ball->data->x += ball->data->velX * dt;
+		ball->data->y += ball->data->velY * dt;
 		ball->data->velX += ball->data->accX * dt;
 		ball->data->velY += ball->data->accY * dt;
 	}
@@ -82,14 +86,14 @@ public:
 	{
 		ball->data->velX += ball->data->accX * dt;
 		ball->data->velY += ball->data->accY * dt;
-		ball->data->ballRect.x += ball->data->velX * dt;
-		ball->data->ballRect.y += ball->data->velY * dt;
+		ball->data->x += ball->data->velX * dt;
+		ball->data->y += ball->data->velY * dt;
 	}
 
 	void VelocityVerletIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
-		ball->data->ballRect.x += ball->data->velX * dt + 0.5 * ball->data->accX * dt * dt;
-		ball->data->ballRect.y += ball->data->velY * dt + 0.5 * ball->data->accY * dt * dt;
+		ball->data->x += ball->data->velX * dt + 0.5 * ball->data->accX * dt * dt;
+		ball->data->y += ball->data->velY * dt + 0.5 * ball->data->accY * dt * dt;
 		ball->data->velX += ball->data->accX * dt;
 		ball->data->velY += ball->data->accY * dt;
 	}
@@ -99,21 +103,18 @@ public:
 	double initialVelocity = 10;
 
 	Canon canon, canon2;
-	Wall ground1, ground2;
-	Wall wall1, iceberg;
 	Water lake;
+
+	// BALL LIST
 	p2List<Ball*>* ball_list = new p2List<Ball*>();
 
-	Ball* CreateBall(int x, int y, int w, int h, int mass, int vel) {
+	Ball* CreateBall(int x, int y, double rad, double mass, double vel) {
 		Ball* b = new Ball();
 
-		//Omplim els valors de la bola
-		b->ballRect.x = x;
-		b->ballRect.y = y;
-		b->ballRect.w = w;
-		b->ballRect.h = h;
+		b->x = x;
+		b->y = y;
+		b->rad = rad;
 		b->mass = mass;
-
 
 		b->velY = sin(canon.angle) * vel;
 		b->velX = cos(canon.angle) * vel;
@@ -124,6 +125,36 @@ public:
 	}
 
 	p2List_item<Ball*>* current_ball;
+
+	// TERRAIN LIST
+	p2List<Terrain*>* terrain_list = new p2List<Terrain*>();
+
+	Terrain* CreateTerrain(int x, int y, int w, int h, double mass, double vel, double restitutionX, double restitutionY, uint r, uint g, uint b, uint a) {
+		Terrain* t = new Terrain();
+
+		t->x = x;
+		t->y = y;
+		t->w = w;
+		t->h = h;
+		t->mass = mass;
+		t->restitutionX = restitutionX;
+		t->restitutionY = restitutionY;
+
+		//Aesthetics
+		t->r = r;
+		t->g = g;
+		t->b = b;
+		t->a = a;
+
+		t->velY = sin(canon.angle) * vel;
+		t->velX = cos(canon.angle) * vel;
+
+		terrain_list->add(t);
+
+		return t;
+	}
+
+	p2List_item<Terrain*>* current_terrain;
 
 	integrator inte = EULER_BACK;
 	double dt = 1;
