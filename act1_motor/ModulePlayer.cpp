@@ -28,14 +28,35 @@ bool ModulePlayer::CleanUp()
 update_status ModulePlayer::Update()
 {
 	// Set Canon POSITION
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT && App->physics->canon.canonBody.x >= 0)
+	
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
-		App->physics->canon.canonBody.x--;
-
+		if (playerTurn == 0)
+		{
+			if (App->physics->canon.canonBody.x > 0)
+				App->physics->canon.canonBody.x--;
+			else
+				App->physics->canon.canonBody.x == 0;
+		}
+		if (playerTurn == 1)
+		{
+			App->physics->canon2.canonBody.x--;
+				
+		}
 	}
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT && App->physics->canon.canonBody.x <= SCREEN_WIDTH / 4)
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
-		App->physics->canon.canonBody.x++;
+		if (playerTurn == 0)
+			App->physics->canon.canonBody.x++;
+
+		if (playerTurn == 1)
+		{
+			if (App->physics->canon2.canonBody.x < SCREEN_WIDTH)
+				App->physics->canon2.canonBody.x++;
+			else
+				App->physics->canon2.canonBody.x == SCREEN_WIDTH;
+		}
+
 
 	}
 	return UPDATE_CONTINUE;

@@ -100,7 +100,8 @@ public:
 
 	float Ft = 0, Fg = 0, Fd = 0, Fl = 0, Fb = 0, Fk = 0;
 	float g = 0;
-	double initialVelocity = 10;
+	double initialVelocity1 = 10;
+	double initialVelocity2 = 10;
 
 	Canon canon, canon2;
 	Water lake;

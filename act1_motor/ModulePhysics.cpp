@@ -106,38 +106,113 @@ update_status ModulePhysics::Update()
 	}
 
 	// Set Canon Angle
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && canon.angle > MIN_ANGLE)
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
-		canon.angle -= 0.1;
-		printf("Angle: %.1f\n", canon.angle);
+		if (App->player->playerTurn == 0)
+		{
+			if (canon.angle < MAX_ANGLE)
+				canon.angle += 0.1;
+			else
+				canon.angle = MAX_ANGLE;
+			printf("Angle player 1: %.1f\n", canon.angle);
+		}
+		if (App->player->playerTurn == 1)
+		{
+			if (canon2.angle < MAX_ANGLE)
+				canon2.angle += 0.1;
+			else
+				canon2.angle = MAX_ANGLE;
+			printf("Angle player 2: %.1f\n", canon2.angle);
+		}
 
 	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && canon.angle < MAX_ANGLE)
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
-		canon.angle += 0.1;
-		printf("Angle: %.1f\n", canon.angle);
+		if (App->player->playerTurn == 0)
+		{
+			if (canon.angle > MIN_ANGLE)
+				canon.angle -= 0.1;
+			else
+				canon.angle = MIN_ANGLE;
+			printf("Angle player 1: %.1f\n", canon.angle);
+		}
+		if (App->player->playerTurn == 1)
+		{
+			if (canon2.angle > MIN_ANGLE)
+				canon2.angle -= 0.1;
+			else
+				canon2.angle = MIN_ANGLE;
+			printf("Angle player 2: %.1f\n", canon2.angle);
+		}
+
+
+		
 
 	}
 
 	// Set Velocity Ball
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && initialVelocity <= MAX_VEL)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		initialVelocity += 0.5;
-		printf("Velocity: %.1f\n", initialVelocity);
+		if (App->player->playerTurn == 0)
+		{
+			if (initialVelocity1 < MAX_VEL)
+				initialVelocity1 += 0.1;
+			else
+				initialVelocity1 = MAX_VEL;
+			printf("Velocity player 1: %.1f\n", initialVelocity1);
+		}
+		if (App->player->playerTurn == 1)
+		{
+			if (initialVelocity2 < MAX_VEL)
+				initialVelocity2 += 0.1;
+			else
+				initialVelocity2 = MAX_VEL;
+			printf("Velocity player 2: %.1f\n", initialVelocity2);
+		}
 
 	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && initialVelocity >= MIN_VEL)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		initialVelocity -= 0.5;
-		printf("Velocity: %.1f\n", initialVelocity);
+		if (App->player->playerTurn == 0)
+		{
+			if (initialVelocity1 > MIN_VEL)
+				initialVelocity1 -= 0.1;
+			else
+				initialVelocity1 = MIN_VEL;
+			printf("Velocity player 1: %.1f\n", initialVelocity1);
+		}
+		if (App->player->playerTurn == 1)
+		{
+			if (initialVelocity2 > MIN_VEL)
+				initialVelocity2 -= 0.1;
+			else
+				initialVelocity2 = MIN_VEL;
+			printf("Velocity player 2: %.1f\n", initialVelocity2);
+		}
 
 	}
 
 	// SHOOT
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 	{
-		printf("Shot\n");
-		CreateBall(canon.canonBody.x, canon.canonBody.y, 10, 10, initialVelocity);
+		
+		if (App->player->playerTurn == 0)
+		{
+			printf("Shot player 1\n");
+			CreateBall(canon.canonBody.x, canon.canonBody.y, 10, 10, initialVelocity1);
+			App->player->playerTurn = 1;
+			printf("---------------------PLAYER'S 2 TURN---------------------\n");
+		}
+		else
+		{
+			printf("Shot player 2\n");
+			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 10, 10, -initialVelocity2);
+			App->player->playerTurn = 0;
+			printf("---------------------PLAYER'S 1 TURN---------------------\n");
+		}
+
+
+		
 	}
 
 	current_ball = ball_list->getFirst();

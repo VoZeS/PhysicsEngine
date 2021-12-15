@@ -25,7 +25,8 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
-
+	bool shoot = false;;
+	int playerTurn = 0;
 public:
 
 	Object ball;
