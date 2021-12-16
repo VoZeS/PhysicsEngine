@@ -1,12 +1,20 @@
-﻿  ModulePlayer.cpp
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(42,14): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(80,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(81,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(89,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(90,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(95,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(96,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePhysics.h(117,12): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePlayer.cpp(39,37): warning C4553: "==": el resultado de la expresión no se usa. ¿Quiso decir "="?
-C:\Users\shake\Desktop\PhysicsEngine\act1_motor\ModulePlayer.cpp(57,38): warning C4553: "==": el resultado de la expresión no se usa. ¿Quiso decir "="?
-  SDL Game.vcxproj -> C:\Users\shake\Desktop\PhysicsEngine\act1_motor\Debug\Physics 2 Class 1 Handout.exe
+﻿  ModulePhysics.cpp
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(43,14): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(81,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(82,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(90,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(91,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(96,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.h(97,1): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(115,23): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(120,28): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(129,24): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(134,29): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(147,23): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(152,28): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(161,24): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(166,25): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(295,17): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(296,17): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\ModulePhysics.cpp(395,11): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  SDL Game.vcxproj -> C:\Users\davidbo5\Documents\GitHub\PhysicsEngine\act1_motor\Debug\Physics 2 Class 1 Handout.exe

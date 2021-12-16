@@ -1,9 +1,10 @@
 #pragma once
 #include "Module.h"
+#include "Application.h"
 #include "Globals.h"
 #include "p2List.h"
 
-#define MIN_ANGLE -(M_PI/2)+0.2
+#define MIN_ANGLE -(M_PI/2) + 0.2
 #define MAX_ANGLE -0.2
 
 #define MAX_VEL 40
@@ -39,7 +40,7 @@ struct Canon
 	SDL_Rect canonBody;
 	
 
-	float angle = MAX_ANGLE;
+	float angle = MIN_ANGLE;
 };
 
 struct Terrain
@@ -109,21 +110,7 @@ public:
 	// BALL LIST
 	p2List<Ball*>* ball_list = new p2List<Ball*>();
 
-	Ball* CreateBall(int x, int y, double rad, double mass, double vel) {
-		Ball* b = new Ball();
-
-		b->x = x;
-		b->y = y;
-		b->rad = rad;
-		b->mass = mass;
-
-		b->velY = sin(canon.angle) * vel;
-		b->velX = cos(canon.angle) * vel;
-
-		ball_list->add(b);
-		
-		return b;
-	}
+	Ball* CreateBall(int x, int y, double rad, double mass, double vel);
 
 	p2List_item<Ball*>* current_ball;
 

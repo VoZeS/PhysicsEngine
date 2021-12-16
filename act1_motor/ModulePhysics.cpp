@@ -110,18 +110,30 @@ update_status ModulePhysics::Update()
 	{
 		if (App->player->playerTurn == 0)
 		{
-			if (canon.angle < MAX_ANGLE)
-				canon.angle += 0.1;
+			if (canon.angle > MIN_ANGLE)
+			{
+				canon.angle -= 0.1;
+
+			}
 			else
-				canon.angle = MAX_ANGLE;
+			{
+				canon.angle = MIN_ANGLE;
+
+			}
 			printf("Angle player 1: %.1f\n", canon.angle);
 		}
 		if (App->player->playerTurn == 1)
 		{
-			if (canon2.angle < MAX_ANGLE)
+			if (canon2.angle < -M_PI / 2)
+			{
 				canon2.angle += 0.1;
+
+			}
 			else
-				canon2.angle = MAX_ANGLE;
+			{
+				canon2.angle = -M_PI / 2;
+
+			}
 			printf("Angle player 2: %.1f\n", canon2.angle);
 		}
 
@@ -130,20 +142,33 @@ update_status ModulePhysics::Update()
 	{
 		if (App->player->playerTurn == 0)
 		{
-			if (canon.angle > MIN_ANGLE)
-				canon.angle -= 0.1;
+			if (canon.angle < MAX_ANGLE)
+			{
+				canon.angle += 0.1;
+
+			}
 			else
-				canon.angle = MIN_ANGLE;
+			{
+				canon.angle = MAX_ANGLE;
+
+			}
 			printf("Angle player 1: %.1f\n", canon.angle);
 		}
 		if (App->player->playerTurn == 1)
 		{
-			if (canon2.angle > MIN_ANGLE)
+			if (canon2.angle > -M_PI)
+			{
 				canon2.angle -= 0.1;
+
+			}
 			else
-				canon2.angle = MIN_ANGLE;
+			{
+				canon2.angle = -M_PI;
+
+			}
 			printf("Angle player 2: %.1f\n", canon2.angle);
 		}
+		
 
 
 		
@@ -156,7 +181,7 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 0)
 		{
 			if (initialVelocity1 < MAX_VEL)
-				initialVelocity1 += 0.1;
+				initialVelocity1 += 0.5;
 			else
 				initialVelocity1 = MAX_VEL;
 			printf("Velocity player 1: %.1f\n", initialVelocity1);
@@ -164,7 +189,7 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 1)
 		{
 			if (initialVelocity2 < MAX_VEL)
-				initialVelocity2 += 0.1;
+				initialVelocity2 += 0.5;
 			else
 				initialVelocity2 = MAX_VEL;
 			printf("Velocity player 2: %.1f\n", initialVelocity2);
@@ -176,7 +201,7 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 0)
 		{
 			if (initialVelocity1 > MIN_VEL)
-				initialVelocity1 -= 0.1;
+				initialVelocity1 -= 0.5;
 			else
 				initialVelocity1 = MIN_VEL;
 			printf("Velocity player 1: %.1f\n", initialVelocity1);
@@ -184,7 +209,7 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 1)
 		{
 			if (initialVelocity2 > MIN_VEL)
-				initialVelocity2 -= 0.1;
+				initialVelocity2 -= 0.5;
 			else
 				initialVelocity2 = MIN_VEL;
 			printf("Velocity player 2: %.1f\n", initialVelocity2);
@@ -206,7 +231,7 @@ update_status ModulePhysics::Update()
 		else
 		{
 			printf("Shot player 2\n");
-			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 10, 10, -initialVelocity2);
+			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 10, 10, initialVelocity2);
 			App->player->playerTurn = 0;
 			printf("---------------------PLAYER'S 1 TURN---------------------\n");
 		}
@@ -359,4 +384,29 @@ bool ModulePhysics::CleanUp()
 	LOG("Destroying physics world");
 
 	return true;
+}
+
+Ball* ModulePhysics::CreateBall(int x, int y, double rad, double mass, double vel)
+{
+	Ball* b = new Ball();
+
+	b->x = x;
+	b->y = y;
+	b->rad = rad;
+	b->mass = mass;
+
+	if (App->player->playerTurn == 0)
+	{
+		b->velY = sin(canon.angle) * vel;
+		b->velX = cos(canon.angle) * vel;
+	}
+	else
+	{
+		b->velY = sin(canon2.angle) * vel;
+		b->velX = cos(canon2.angle) * vel;
+	}
+
+	ball_list->add(b);
+
+	return b;
 }

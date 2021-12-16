@@ -34,27 +34,36 @@ update_status ModulePlayer::Update()
 		if (playerTurn == 0)
 		{
 			if (App->physics->canon.canonBody.x > 0)
-				App->physics->canon.canonBody.x--;
+				App->physics->canon.canonBody.x -= 4;
 			else
-				App->physics->canon.canonBody.x == 0;
+				App->physics->canon.canonBody.x = 0;
 		}
 		if (playerTurn == 1)
 		{
-			App->physics->canon2.canonBody.x--;
+			if (App->physics->canon2.canonBody.x > SCREEN_WIDTH - SCREEN_WIDTH / 5)
+				App->physics->canon2.canonBody.x -= 4;
+			else
+				App->physics->canon2.canonBody.x = SCREEN_WIDTH - SCREEN_WIDTH / 5;
 				
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{
 		if (playerTurn == 0)
-			App->physics->canon.canonBody.x++;
+		{
+			if (App->physics->canon.canonBody.x < (SCREEN_WIDTH / 5) - App->physics->canon.canonBody.w)
+				App->physics->canon.canonBody.x += 4;
+			else
+				App->physics->canon.canonBody.x = (SCREEN_WIDTH / 5) - App->physics->canon.canonBody.w;
+		}
+			
 
 		if (playerTurn == 1)
 		{
-			if (App->physics->canon2.canonBody.x < SCREEN_WIDTH)
-				App->physics->canon2.canonBody.x++;
+			if (App->physics->canon2.canonBody.x < SCREEN_WIDTH - App->physics->canon2.canonBody.w)
+				App->physics->canon2.canonBody.x += 4;
 			else
-				App->physics->canon2.canonBody.x == SCREEN_WIDTH;
+				App->physics->canon2.canonBody.x = SCREEN_WIDTH - App->physics->canon2.canonBody.w;
 		}
 
 
