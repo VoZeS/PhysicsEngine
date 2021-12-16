@@ -7,8 +7,8 @@
 #define MIN_ANGLE -(M_PI/2) + 0.2
 #define MAX_ANGLE -0.2
 
-#define MAX_VEL 40
-#define MIN_VEL 10
+#define MAX_VEL 34
+#define MIN_VEL 15
 
 enum integrator
 {
@@ -35,12 +35,14 @@ struct Ball
 	bool physics_enabled = true;
 };
 
-struct Canon
+struct Player
 {
 	SDL_Rect canonBody;
 	
+	float angle = 0;
 
-	float angle = MIN_ANGLE;
+	bool alive = true,
+		win = false;
 };
 
 struct Terrain
@@ -60,7 +62,6 @@ struct Terrain
 struct Water
 {
 	SDL_Rect waterBody;
-
 
 };
 
@@ -104,7 +105,7 @@ public:
 	double initialVelocity1 = 10;
 	double initialVelocity2 = 10;
 
-	Canon canon, canon2;
+	Player canon, canon2;
 	Water lake;
 
 	// BALL LIST
@@ -144,7 +145,11 @@ public:
 
 	p2List_item<Terrain*>* current_terrain;
 
+	void CollBallTerrain();
+	void CollBallPlayer();
+
 	integrator inte = EULER_BACK;
+
 	double dt = 1;
 private:
 

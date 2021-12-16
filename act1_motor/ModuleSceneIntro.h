@@ -67,7 +67,11 @@ public:
 	SDL_Texture* tex_light_tiny;
 	SDL_Texture* tex_light_medium;
 	SDL_Texture* tex_light_big;
+
 	SDL_Texture* backgroundTex;
+	SDL_Texture* p1winTex;
+	SDL_Texture* p2winTex;
+	SDL_Texture* restartTex;
 
 	uint fx_light_tiny;
 	uint fx_light_medium;

@@ -23,22 +23,34 @@ bool ModulePhysics::Start()
 	LOG("Creating Physics 2D environment");
 
 	// ----------------------------------------------------------------------------------------------- CREATE TERRAIN
-		// ----------------------------------------------------------------------------- WATER
-	CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50, 100, 0, 0.8, 0.6,
+	// ----------------------------------------------------------------------------- WATER
+	CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40 - 200, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50 + 200, 100, 0, 0.8, 0.6,
 		100, 100, 255, 100);
 
 	// ----------------------------------------------------------------------------- GROUND 1
-	CreateTerrain(0, SCREEN_HEIGHT - 50 , SCREEN_WIDTH / 5, 50, 1000, 0, 0.4, 0.5,
+	CreateTerrain(0, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
 		0, 255, 255, 255);
 
 	// ----------------------------------------------------------------------------- GROUND 2
-	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50, SCREEN_WIDTH / 5, 50, 1000, 0, 0.4, 0.5,
+	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
 		0, 255, 255, 255);
 
 	// ----------------------------------------------------------------------------- WALL
-	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200, 120, 200, 100, 0, 0.5, 1.5,
+	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200 - 200, 120, 180, 100, 0, 0.5, 1.5,
 		255, 0, 255, 255);
-	
+
+	initialVelocity1 = MIN_VEL;
+	initialVelocity2 = MIN_VEL;
+
+	canon.angle = -MAX_ANGLE;
+	canon2.angle = -M_PI;
+
+	canon.alive = true;
+	canon2.alive = true;
+
+	canon.win = false;
+	canon2.win = false;
+
 	return true;
 }
 
@@ -87,6 +99,33 @@ update_status ModulePhysics::PreUpdate()
 
 update_status ModulePhysics::Update()
 {
+	// R TO RESTART
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN)
+	{
+		// ------------------------------- WE RESET ALL THE VALUES AND POSITIONS
+		canon.angle = -MAX_ANGLE;
+		canon2.angle = -M_PI;
+
+		initialVelocity1 = 10;
+		initialVelocity2 = 10;
+
+		canon.alive = true;
+		canon2.alive = true;
+
+		canon.win = false;
+		canon2.win = false;
+
+		canon.canonBody.x = 50;
+		canon.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+
+		canon2.canonBody.x = SCREEN_WIDTH - 50;
+		canon2.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+
+		// WE CLEAR ALL BALLS
+		ball_list->clear();
+
+	}
+
 	// Set Integrator
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
@@ -108,7 +147,7 @@ update_status ModulePhysics::Update()
 	// Set Canon Angle
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
-		if (App->player->playerTurn == 0)
+		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (canon.angle > MIN_ANGLE)
 			{
@@ -122,16 +161,16 @@ update_status ModulePhysics::Update()
 			}
 			printf("Angle player 1: %.1f\n", canon.angle);
 		}
-		if (App->player->playerTurn == 1)
+		if (App->player->playerTurn == 1 && canon2.alive)
 		{
-			if (canon2.angle < -M_PI / 2)
+			if (canon2.angle < MIN_ANGLE - 0.4)
 			{
 				canon2.angle += 0.1;
 
 			}
 			else
 			{
-				canon2.angle = -M_PI / 2;
+				canon2.angle = MIN_ANGLE - 0.4;
 
 			}
 			printf("Angle player 2: %.1f\n", canon2.angle);
@@ -140,7 +179,7 @@ update_status ModulePhysics::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
-		if (App->player->playerTurn == 0)
+		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (canon.angle < MAX_ANGLE)
 			{
@@ -154,7 +193,7 @@ update_status ModulePhysics::Update()
 			}
 			printf("Angle player 1: %.1f\n", canon.angle);
 		}
-		if (App->player->playerTurn == 1)
+		if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			if (canon2.angle > -M_PI)
 			{
@@ -168,17 +207,12 @@ update_status ModulePhysics::Update()
 			}
 			printf("Angle player 2: %.1f\n", canon2.angle);
 		}
-		
-
-
-		
-
 	}
 
 	// Set Velocity Ball
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
-		if (App->player->playerTurn == 0)
+		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (initialVelocity1 < MAX_VEL)
 				initialVelocity1 += 0.5;
@@ -186,7 +220,7 @@ update_status ModulePhysics::Update()
 				initialVelocity1 = MAX_VEL;
 			printf("Velocity player 1: %.1f\n", initialVelocity1);
 		}
-		if (App->player->playerTurn == 1)
+		if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			if (initialVelocity2 < MAX_VEL)
 				initialVelocity2 += 0.5;
@@ -198,7 +232,7 @@ update_status ModulePhysics::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
-		if (App->player->playerTurn == 0)
+		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (initialVelocity1 > MIN_VEL)
 				initialVelocity1 -= 0.5;
@@ -206,7 +240,7 @@ update_status ModulePhysics::Update()
 				initialVelocity1 = MIN_VEL;
 			printf("Velocity player 1: %.1f\n", initialVelocity1);
 		}
-		if (App->player->playerTurn == 1)
+		if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			if (initialVelocity2 > MIN_VEL)
 				initialVelocity2 -= 0.5;
@@ -221,14 +255,14 @@ update_status ModulePhysics::Update()
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 	{
 		
-		if (App->player->playerTurn == 0)
+		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			printf("Shot player 1\n");
-			CreateBall(canon.canonBody.x, canon.canonBody.y, 10, 10, initialVelocity1);
+			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y, 10, 10, initialVelocity1);
 			App->player->playerTurn = 1;
 			printf("---------------------PLAYER'S 2 TURN---------------------\n");
 		}
-		else
+		else if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			printf("Shot player 2\n");
 			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 10, 10, initialVelocity2);
@@ -273,97 +307,15 @@ update_status ModulePhysics::Update()
 
 update_status ModulePhysics::PostUpdate()
 {
+	// Step #4: solve collisions
+
 	current_ball = ball_list->getFirst();
 
 	while (current_ball != NULL)
 	{
-		current_terrain = terrain_list->getFirst();
+		CollBallTerrain();
+		CollBallPlayer();
 
-		while (current_terrain != NULL)
-		{
-			// Step #4: solve collisions
-			// Calculations:
-			// - deltaX = X distance between ball's center and terrain's center
-			// - deltaY = Y distance between ball's center and terrain's center
-			// - intersectX = Sees if the X distance between ball's center and terrain's center --deltaX-- 
-			// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
-			// This is checked later in an if
-			// - intersectY = Sees if the Y distance between ball's center and terrain's center --deltaY-- 
-			// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
-			// This is checked later in an if
-
-			float deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (current_terrain->data->x + current_terrain->data->w / 2);
-			float deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (current_terrain->data->y + current_terrain->data->h / 2);
-			float intersectX = abs(deltaX) - ((current_ball->data->rad / 2) + (current_terrain->data->w / 2));
-			float intersectY = abs(deltaY) - ((current_ball->data->rad / 2) + (current_terrain->data->h / 2));
-
-			// Is one body inside of the other?
-			if (intersectX < 0.0f && intersectY < 0.0f)
-			{
-				// Is the X intersection higher? If so, they are colliding from the sides!
-				if (intersectX > intersectY)
-				{
-					// Is the X distance between ball's center and terrain's center --deltaX-- positive?
-					// If so, is colliding from the RIGHT!
-					if (deltaX > 0.0f)
-					{
-						current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad;
-
-						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
-
-						current_ball->data->physics_enabled = false;
-					}
-					// Is the X distance between ball's center and terrain's center --deltaX-- positive? 
-					// If NOT, is colliding from the LEFT!
-					else
-					{
-						current_ball->data->x = current_terrain->data->x - current_ball->data->rad;
-
-						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
-
-						current_ball->data->physics_enabled = false;
-					}
-				}
-				// Is the X intersection higher? If NOT, they are colliding UP or DOWN!
-				else
-				{
-					// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
-					// If so, is colliding from DOWN!
-					if (deltaY > 0.0f)
-					{
-						current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad;
-
-						current_ball->data->y = current_terrain->data->y;
-
-						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
-
-						current_ball->data->physics_enabled = false;
-
-					}
-					// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
-					// If NOT, is colliding from UP!
-					else
-					{
-						current_ball->data->y = current_terrain->data->y - current_ball->data->rad;
-
-						current_ball->data->y = current_terrain->data->y;
-
-						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
-
-						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
-						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
-
-						current_ball->data->physics_enabled = false;
-
-					}
-				}
-			}
-			current_terrain = current_terrain->next;
-		}
 		current_ball = current_ball->next;
 	}
 	
@@ -409,4 +361,135 @@ Ball* ModulePhysics::CreateBall(int x, int y, double rad, double mass, double ve
 	ball_list->add(b);
 
 	return b;
+}
+
+void ModulePhysics::CollBallTerrain()
+{
+	current_terrain = terrain_list->getFirst();
+
+	while (current_terrain != NULL)
+	{
+		// SOLVE COLLISIONS BETWEEN BALL AND TERRAIN
+
+		// Calculations:
+		// - deltaX = X distance between ball's center and terrain's center
+		// - deltaY = Y distance between ball's center and terrain's center
+		// - intersectX = Sees if the X distance between ball's center and terrain's center --deltaX-- 
+		// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+		// This is checked later in an if
+		// - intersectY = Sees if the Y distance between ball's center and terrain's center --deltaY-- 
+		// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+		// This is checked later in an if
+
+		float deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (current_terrain->data->x + current_terrain->data->w / 2);
+		float deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (current_terrain->data->y + current_terrain->data->h / 2);
+		float intersectX = abs(deltaX) - ((current_ball->data->rad / 2) + (current_terrain->data->w / 2));
+		float intersectY = abs(deltaY) - ((current_ball->data->rad / 2) + (current_terrain->data->h / 2));
+
+		// Is one body inside of the other?
+		if (intersectX < 0.0f && intersectY < 0.0f)
+		{
+			// Is the X intersection higher? If so, they are colliding from the sides!
+			if (intersectX > intersectY)
+			{
+				// Is the X distance between ball's center and terrain's center --deltaX-- positive?
+				// If so, is colliding from the RIGHT!
+				if (deltaX > 0.0f)
+				{
+					current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad/2;
+
+					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+					current_ball->data->physics_enabled = false;
+				}
+				// Is the X distance between ball's center and terrain's center --deltaX-- positive? 
+				// If NOT, is colliding from the LEFT!
+				else
+				{
+					current_ball->data->x = current_terrain->data->x - current_ball->data->rad/2;
+
+					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+					current_ball->data->physics_enabled = false;
+				}
+			}
+			// Is the X intersection higher? If NOT, they are colliding UP or DOWN!
+			else
+			{
+				// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
+				// If so, is colliding from DOWN!
+				if (deltaY > 0.0f)
+				{
+					current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad/2;
+
+					current_ball->data->y = current_terrain->data->y;
+
+					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+					current_ball->data->physics_enabled = false;
+
+				}
+				// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
+				// If NOT, is colliding from UP!
+				else
+				{
+					current_ball->data->y = current_terrain->data->y - current_ball->data->rad/2;
+
+					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+
+					if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+					if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
+
+					current_ball->data->physics_enabled = false;
+
+				}
+			}
+		}
+		current_terrain = current_terrain->next;
+	}
+}
+
+void ModulePhysics::CollBallPlayer()
+{
+
+		// SOLVE COLLISIONS BETWEEN BALL AND PLAYER
+
+		// Calculations:
+		// - deltaX = X distance between ball's center and player's center
+		// - deltaY = Y distance between ball's center and player's center
+		// - intersectX = Sees if the X distance between ball's center and player's center --deltaX-- 
+		// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+		// This is checked later in an if
+		// - intersectY = Sees if the Y distance between ball's center and player's center --deltaY-- 
+		// is lower than the addition of the half of the two bodies. If so, they are colliding (one inside the other).
+		// This is checked later in an if
+
+		float P1_deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (canon.canonBody.x + canon.canonBody.w / 2);
+		float P1_deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (canon.canonBody.y + canon.canonBody.h / 2);
+		float P1_intersectX = abs(P1_deltaX) - ((current_ball->data->rad / 2) + (canon.canonBody.w / 2));
+		float P1_intersectY = abs(P1_deltaY) - ((current_ball->data->rad / 2) + (canon.canonBody.h / 2));
+
+		// Is one body inside of the other?
+		if (P1_intersectX < 0.0f && P1_intersectY < 0.0f)
+		{
+			canon.alive = false;
+			canon2.win = true;
+		}
+
+		float P2_deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (canon2.canonBody.x + canon2.canonBody.w / 2);
+		float P2_deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (canon2.canonBody.y + canon2.canonBody.h / 2);
+		float P2_intersectX = abs(P2_deltaX) - ((current_ball->data->rad / 2) + (canon2.canonBody.w / 2));
+		float P2_intersectY = abs(P2_deltaY) - ((current_ball->data->rad / 2) + (canon2.canonBody.h / 2));
+
+		// Is one body inside of the other?
+		if (P2_intersectX < 0.0f && P2_intersectY < 0.0f)
+		{
+			canon2.alive = false;
+			canon.win = true;
+
+		}
 }
