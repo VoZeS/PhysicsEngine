@@ -24,8 +24,13 @@ bool ModulePhysics::Start()
 
 	// ----------------------------------------------------------------------------------------------- CREATE TERRAIN
 	// ----------------------------------------------------------------------------- WATER
-	CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40 - 200, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50 + 200, 100, 0, 0.8, 0.6,
-		100, 100, 255, 100);
+	//CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50, 100, 0, 0.8, 0.6,
+		//100, 100, 255, 100);
+
+	lake.waterBody.x = SCREEN_WIDTH / 5;
+	lake.waterBody.y = SCREEN_HEIGHT - 40;
+	lake.waterBody.w = SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 205;
+	lake.waterBody.h = 50;
 
 	// ----------------------------------------------------------------------------- GROUND 1
 	CreateTerrain(0, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
@@ -308,7 +313,7 @@ update_status ModulePhysics::Update()
 update_status ModulePhysics::PostUpdate()
 {
 	// Step #4: solve collisions
-
+	App->renderer->DrawQuad(lake.waterBody, 0, 0, 255, 100);
 	current_ball = ball_list->getFirst();
 
 	while (current_ball != NULL)

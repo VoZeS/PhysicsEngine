@@ -100,6 +100,23 @@ public:
 		ball->data->velY += ball->data->accY * dt;
 	}
 
+	void Buoyancy(p2List_item<Ball*>*& ball, int waterY)
+	{
+		float coeficientD = 1, coeficientB = 1, density = 1, surface;
+		ball->data->velX = ball->data->velX * coeficientD;
+		if (ball->data->y + ball->data->rad - waterY <= 0)
+		{
+			surface = 0;
+		}
+		else
+		{
+			surface = (ball->data->y + ball->data->rad - waterY) * ball->data->rad;
+		}
+
+		ball->data->velY = (density * (ball->data->velY * ball->data->velY) * surface * coeficientB) / 2;
+
+	}
+
 	float Ft = 0, Fg = 0, Fd = 0, Fl = 0, Fb = 0, Fk = 0;
 	float g = 0;
 	double initialVelocity1 = 10;
