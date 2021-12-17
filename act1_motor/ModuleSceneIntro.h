@@ -74,6 +74,7 @@ public:
 	SDL_Texture* restartTex;
 	SDL_Texture* ballTex;
 	SDL_Texture* mineTex;
+	SDL_Texture* pumpTex;
 
 	uint fx_light_tiny;
 	uint fx_light_medium;

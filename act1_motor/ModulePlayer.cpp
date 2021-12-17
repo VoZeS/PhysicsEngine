@@ -64,8 +64,6 @@ update_status ModulePlayer::Update()
 			else
 				App->physics->canon2.canonBody.x = SCREEN_WIDTH - App->physics->canon2.canonBody.w;
 		}
-
-
 	}
 
 	// SET GOD MODE

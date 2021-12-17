@@ -5,8 +5,8 @@
 #include "ModulePlayer.h"
 #include "p2List.h"
 
-#define MIN_ANGLE -(M_PI/2) + 0.2
-#define MAX_ANGLE -0.2
+#define MIN_ANGLE -(3.1/2) + 0.2
+#define MAX_ANGLE 0
 
 #define MAX_VEL 50
 #define MIN_VEL 15
@@ -206,8 +206,11 @@ public:
 	}
 
 
-	double initialVelocity1 = 10;
-	double initialVelocity2 = 10;
+	int initialVelocity1 = 10;
+	int initialVelocity2 = 10;
+
+	int angle1INT = 0;
+	int angle2INT = 0;
 
 	Player canon, canon2;
 	Water lake;

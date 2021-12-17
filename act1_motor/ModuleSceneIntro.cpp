@@ -26,6 +26,7 @@ bool ModuleSceneIntro::Start()
 
 	ballTex = App->textures->Load("Assets/ball.png");
 	mineTex = App->textures->Load("Assets/mine.png");
+	pumpTex = App->textures->Load("Assets/pump.png");
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
@@ -68,7 +69,6 @@ update_status ModuleSceneIntro::Update()
 {
 	// ----------------------------------------------------------------------------------------- DRAW BACKGROUND
 	App->renderer->DrawQuad(screen, 200, 200, 200, 255);
-	//App->renderer->Blit(backgroundTex, 0, 0, &screen);
 
 	// ----------------------------------------------------------------------------------------- DRAW TERRAIN
 	App->physics->current_terrain = App->physics->terrain_list->getFirst();
@@ -83,9 +83,9 @@ update_status ModuleSceneIntro::Update()
 
 	// ----------------------------------------------------------------------------------------- DRAW PLAYERS
 	if(App->physics->canon.alive)
-		App->renderer->DrawQuad(App->physics->canon.canonBody, 255, 0, 255, 255);
+		App->renderer->DrawQuad(App->physics->canon.canonBody, 0, 0, 255, 255);
 	if(App->physics->canon2.alive)
-		App->renderer->DrawQuad(App->physics->canon2.canonBody, 255, 0, 255, 255);
+		App->renderer->DrawQuad(App->physics->canon2.canonBody, 255, 0, 0, 255);
 	
 	
 	// ----------------------------------------------------------------------------------------- DRAW BALLS
@@ -111,6 +111,11 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(mineTex, 50, 50);
 
 	}
+	else if (App->physics->canon.weapon3)
+	{
+		App->renderer->Blit(pumpTex, 50, 50);
+
+	}
 
 	if (App->physics->canon2.weapon1)
 	{
@@ -120,6 +125,11 @@ update_status ModuleSceneIntro::Update()
 	else if (App->physics->canon2.weapon2)
 	{
 		App->renderer->Blit(mineTex, SCREEN_WIDTH - 130, 50);
+
+	}
+	else if (App->physics->canon2.weapon3)
+	{
+		App->renderer->Blit(pumpTex, SCREEN_WIDTH - 130, 50);
 
 	}
 
@@ -137,6 +147,19 @@ update_status ModuleSceneIntro::Update()
 
 	}
 
+	// ----------------------------------------------------------------------------------------- DRAW VEL
+	// P1
+	App->renderer->DrawQuad({50, 500, App->physics->initialVelocity1 * 2, 20}, 255, 255, 255, 255);
+
+	// P2
+	App->renderer->DrawQuad({875, 500, App->physics->initialVelocity2 * 2, 20}, 255, 255, 255, 255);
+
+	// ----------------------------------------------------------------------------------------- DRAW ANGLE
+	// P1
+	App->renderer->DrawQuad({ 50, 700, 20, App->physics->angle1INT}, 255, 255, 255, 255);
+
+	// P2
+	App->renderer->DrawQuad({ 875, 700, 20, -App->physics->angle2INT}, 255, 255, 255, 255);
 
 	return UPDATE_CONTINUE;
 }

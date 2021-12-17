@@ -35,15 +35,15 @@ bool ModulePhysics::Start()
 
 	// ----------------------------------------------------------------------------- GROUND 1
 	CreateTerrain(0, SCREEN_HEIGHT - 50 - 240, SCREEN_WIDTH / 5, 50 + 240, 1000, 0, 0.4, 0.5,
-		0, 255, 255, 255);
+		255, 127, 50, 255);
 
 	// ----------------------------------------------------------------------------- GROUND 2
 	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50 - 240, SCREEN_WIDTH / 5, 50 + 240, 1000, 0, 0.4, 0.5,
-		0, 255, 255, 255);
+		255, 127, 50, 255);
 
 	// ----------------------------------------------------------------------------- WALL
 	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200 - 240, 120, 180, 100, 0, 0.5, 1.5,
-		255, 0, 255, 255);
+		255, 127, 50, 255);
 
 	initialVelocity1 = MIN_VEL;
 	initialVelocity2 = MIN_VEL;
@@ -73,7 +73,6 @@ update_status ModulePhysics::PreUpdate()
 		current_ball->data->accX = current_ball->data->accY = current_ball->data->acc = 0.0;
 
 		// Step #1: Compute forces
-
 			// Compute Gravity force
 		Gravity();
 			
@@ -83,7 +82,7 @@ update_status ModulePhysics::PreUpdate()
 		// Compute HYDRODYNAMIC forces
 		Hydrodynamics(current_ball, lake.waterBody.y);
 
-		// Add gravity force to the total accumulated force of the ball
+		// Add gravity force to the total accumulated force of the ball and player
 		current_ball->data->fX += (Fgx + FdHx + FdAx);
 		current_ball->data->fY += (Fgy + Fb + FdHy + FdAy);
 
@@ -236,18 +235,18 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (initialVelocity1 < MAX_VEL)
-				initialVelocity1 += 0.5;
+				initialVelocity1 += 1;
 			else
 				initialVelocity1 = MAX_VEL;
-			printf("Velocity player 1: %.1f\n", initialVelocity1);
+			printf("Velocity player 1: %d\n", initialVelocity1);
 		}
 		if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			if (initialVelocity2 < MAX_VEL)
-				initialVelocity2 += 0.5;
+				initialVelocity2 += 1;
 			else
 				initialVelocity2 = MAX_VEL;
-			printf("Velocity player 2: %.1f\n", initialVelocity2);
+			printf("Velocity player 2: %d\n", initialVelocity2);
 		}
 
 	}
@@ -256,18 +255,18 @@ update_status ModulePhysics::Update()
 		if (App->player->playerTurn == 0 && canon.alive)
 		{
 			if (initialVelocity1 > MIN_VEL)
-				initialVelocity1 -= 0.5;
+				initialVelocity1 -= 1;
 			else
 				initialVelocity1 = MIN_VEL;
-			printf("Velocity player 1: %.1f\n", initialVelocity1);
+			printf("Velocity player 1: %d\n", initialVelocity1);
 		}
 		if (App->player->playerTurn == 1 && canon2.alive)
 		{
 			if (initialVelocity2 > MIN_VEL)
-				initialVelocity2 -= 0.5;
+				initialVelocity2 -= 1;
 			else
 				initialVelocity2 = MIN_VEL;
-			printf("Velocity player 2: %.1f\n", initialVelocity2);
+			printf("Velocity player 2: %d\n", initialVelocity2);
 		}
 
 	}
@@ -371,18 +370,16 @@ update_status ModulePhysics::Update()
 		else if (App->player->playerTurn == 0 && canon.alive && canon.weapon3)
 		{
 			printf("Shot player 1 - SHOT GUN\n");
-			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y + 5, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
-			CreateBall(canon.canonBody.x - 5 + canon.canonBody.w, canon.canonBody.y, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
-			CreateBall(canon.canonBody.x + 5 + canon.canonBody.w, canon.canonBody.y - 5, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
+			CreateBall(canon.canonBody.x + canon.canonBody.w - 10, canon.canonBody.y - 20, 2, 2, initialVelocity1, 3, 0, 0, 0, 255);
+			CreateBall(canon.canonBody.x + canon.canonBody.w + 10, canon.canonBody.y, 2, 2, initialVelocity1, 3, 0, 0, 0, 255);
 			App->player->playerTurn = 1;
 			printf("---------------------PLAYER'S 2 TURN---------------------\n");
 		}
 		else if (App->player->playerTurn == 1 && canon2.alive && canon2.weapon3)
 		{
 			printf("Shot player 2 - SHOT GUN\n");
-			CreateBall(canon2.canonBody.x + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
-			CreateBall(canon2.canonBody.x - 5 + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
-			CreateBall(canon2.canonBody.x + 5 + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
+			CreateBall(canon2.canonBody.x + 10, canon2.canonBody.y - 20, 2, 2, initialVelocity2, 3, 0, 0, 0, 255);
+			CreateBall(canon2.canonBody.x - 10, canon2.canonBody.y, 2, 2, initialVelocity2, 3, 0, 0, 0, 255); 
 			App->player->playerTurn = 0;
 			printf("---------------------PLAYER'S 1 TURN---------------------\n");
 		}
@@ -434,6 +431,8 @@ update_status ModulePhysics::PostUpdate()
 		current_ball = current_ball->next;
 	}
 	
+	angle1INT = canon.angle * 180 / M_PI;
+	angle2INT = canon2.angle * 180 / M_PI + 180;
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
@@ -565,6 +564,16 @@ void ModulePhysics::CollBallTerrain()
 						current_ball->data->physics_enabled = false;
 
 					}
+					else if (current_ball->data->weapon == 3)
+					{
+						current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad / 2;
+
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+						current_ball->data->physics_enabled = false;
+
+					}
 					
 				}
 				// Is the X distance between ball's center and terrain's center --deltaX-- positive? 
@@ -586,6 +595,16 @@ void ModulePhysics::CollBallTerrain()
 
 						current_ball->data->velX = 0;
 						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
+					else if (current_ball->data->weapon == 3)
+					{
+						current_ball->data->x = current_terrain->data->x - current_ball->data->rad / 2;
+						
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
 						current_ball->data->physics_enabled = false;
 
@@ -621,6 +640,19 @@ void ModulePhysics::CollBallTerrain()
 						current_ball->data->physics_enabled = false;
 
 					}
+					else if (current_ball->data->weapon == 3)
+					{
+						current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad / 2;
+
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
 
 				}
 				// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
@@ -645,6 +677,19 @@ void ModulePhysics::CollBallTerrain()
 
 						current_ball->data->velX = 0;
 						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
+					else if (current_ball->data->weapon == 3)
+					{
+						current_ball->data->y = current_terrain->data->y - current_ball->data->rad / 2;
+
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
 
 						current_ball->data->physics_enabled = false;
 

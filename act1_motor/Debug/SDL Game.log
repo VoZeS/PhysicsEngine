@@ -1,4 +1,4 @@
-﻿  ModulePhysics.cpp
+﻿  ModuleSceneIntro.cpp
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(99,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(100,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(108,1): warning C4244: '+=': conversión de 'double' a 'int'; posible pérdida de datos
@@ -10,23 +10,4 @@ C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEng
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(142,31): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(176,1): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
 C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.h(180,29): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(51,26): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(52,22): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(117,27): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(118,23): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(175,23): warning C4305: '-=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(180,28): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(189,24): warning C4305: '+=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(194,35): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(207,23): warning C4305: '+=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(212,28): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(221,24): warning C4305: '-=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(226,25): warning C4305: '=': truncamiento de 'double' a 'float'
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(462,14): warning C4244: '=': conversión de 'double' a 'int'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(534,16): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(535,16): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(674,19): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(675,19): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(686,19): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
-C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\ModulePhysics.cpp(687,19): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
   SDL Game.vcxproj -> C:\Users\david\OneDrive\Escritorio\UNI\A2\S3\PhysicsII\PlantillaMotor\PhysicsEngine\act1_motor\Debug\Physics 2 Class 1 Handout.exe
