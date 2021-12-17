@@ -10,6 +10,8 @@
 #define MAX_VEL 34
 #define MIN_VEL 15
 
+#define GRAVITY 1.0
+
 enum integrator
 {
 	EULER_BACK,
@@ -77,6 +79,11 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
+	double Fl = 0, Fk = 0;
+	double Fgx = 0, Fgy = 0; // GRAVITY FORCES
+	double FdHx = 0, FdHy = 0, Fb = 0; // HYDRODYNAMIC FORCES (DRAG AND BOUYANCY)
+	double FdAx = 0, FdAy = 0; // AERODYNAMIC FORCES (DRAG)
+
 	void EulerBWDIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
 		ball->data->x += ball->data->velX * dt;
@@ -100,25 +107,93 @@ public:
 		ball->data->velY += ball->data->accY * dt;
 	}
 
-	void Buoyancy(p2List_item<Ball*>*& ball, int waterY)
+	void Gravity()
 	{
-		float coeficientD = 1, coeficientB = 1, density = 1, surface;
-		ball->data->velX = ball->data->velX * coeficientD;
+		Fgx = current_ball->data->mass * 0.0;
+		Fgy = current_ball->data->mass * GRAVITY; // Let's assume gravity is constant and downwards
+	}
+
+	void Hydrodynamics(p2List_item<Ball*>*& ball, int waterY)
+	{
+		float coeficientD = 0.1, coeficientB = 0.05, density = 0.2, surface = 0;
+
 		if (ball->data->y + ball->data->rad - waterY <= 0)
 		{
 			surface = 0;
+			coeficientD = 0;
 		}
 		else
 		{
 			surface = (ball->data->y + ball->data->rad - waterY) * ball->data->rad;
+			coeficientD = 0.1;
+
+			if (surface >= ball->data->rad * ball->data->rad)
+			{
+				surface = ball->data->rad * ball->data->rad;
+			}
+
 		}
 
-		ball->data->velY = (density * (ball->data->velY * ball->data->velY) * surface * coeficientB) / 2;
+		// BOUYANCY
+		// Sign "-" to define its way
+		Fb = - coeficientB * Fgy * surface;
+
+		// DRAG HYDRODYNAMIC
+		// Sign "-" to define its way
+		if (ball->data->velX < 0)
+		{
+			FdHx = ball->data->velX * coeficientD;
+		}
+		else
+		{
+			FdHx = -ball->data->velX * coeficientD;
+		}
+		if (ball->data->velY < 0)
+		{
+			FdHy = ball->data->velY * coeficientD;
+		}
+		else
+		{
+			FdHy = -ball->data->velY * coeficientD;
+		}
 
 	}
 
-	float Ft = 0, Fg = 0, Fd = 0, Fl = 0, Fb = 0, Fk = 0;
-	float g = 0;
+	void Aerodynamics(p2List_item<Ball*>*& ball, int waterY)
+	{
+		float coeficientD = 0.2, density = 0.01, surface = 0;
+
+		if (ball->data->y + ball->data->rad - waterY < 0)
+		{
+			surface = ball->data->rad*ball->data->rad;
+			
+		}
+		else
+		{
+			surface = 0;
+		}
+
+		// DRAG AERODYNAMIC
+		// Sign "-" to define its way
+		if (ball->data->velX < 0)
+		{
+			FdAx = 0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+		}
+		else
+		{
+			FdAx = -0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+		}
+		if (ball->data->velY < 0)
+		{
+			FdAy = 0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+		}
+		else
+		{
+			FdAy = -0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+		}
+	}
+
+
 	double initialVelocity1 = 10;
 	double initialVelocity2 = 10;
 
@@ -164,7 +239,6 @@ public:
 
 	void CollBallTerrain();
 	void CollBallPlayer();
-	void CollBallWater();
 
 	integrator inte = EULER_BACK;
 

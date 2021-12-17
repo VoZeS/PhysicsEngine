@@ -28,7 +28,6 @@ bool ModulePlayer::CleanUp()
 update_status ModulePlayer::Update()
 {
 	// Set Canon POSITION
-	
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 	{
 		if (playerTurn == 0)
@@ -67,6 +66,15 @@ update_status ModulePlayer::Update()
 		}
 
 
+	}
+
+	// SET GOD MODE
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
+	{
+		if (!godMode)
+			godMode = true;
+		else
+			godMode = false;
 	}
 	return UPDATE_CONTINUE;
 }

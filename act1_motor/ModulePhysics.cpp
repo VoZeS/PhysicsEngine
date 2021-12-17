@@ -74,12 +74,17 @@ update_status ModulePhysics::PreUpdate()
 		// Step #1: Compute forces
 
 			// Compute Gravity force
-		double fgX = current_ball->data->mass * 0.0;
-		double fgY = current_ball->data->mass * 1.0; // Let's assume gravity is constant and downwards
+		Gravity();
+			
+			// Compute HYDRODYNAMIC forces
+		Hydrodynamics(current_ball, lake.waterBody.y);
+
+			// Compute AERODYNAMIC forces
+		Aerodynamics(current_ball, lake.waterBody.y);
 
 		// Add gravity force to the total accumulated force of the ball
-		current_ball->data->fX += fgX;
-		current_ball->data->fY += fgY;
+		current_ball->data->fX += (Fgx + FdHx + FdAx);
+		current_ball->data->fY += (Fgy + Fb + FdHy + FdAy);
 
 		// Compute Aerodynamic Lift & Drag forces
 		/*double speed = current_ball->data->speed(current_ball->data->vx - atmosphere.windx, current_ball->data->vy - atmosphere.windy);
@@ -125,6 +130,8 @@ update_status ModulePhysics::Update()
 
 		canon2.canonBody.x = SCREEN_WIDTH - 50;
 		canon2.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+
+		App->player->playerTurn = 0;
 
 		// WE CLEAR ALL BALLS
 		ball_list->clear();
@@ -320,7 +327,7 @@ update_status ModulePhysics::PostUpdate()
 	{
 		CollBallTerrain();
 		CollBallPlayer();
-		CollBallWater();
+
 		current_ball = current_ball->next;
 	}
 	
@@ -429,8 +436,6 @@ void ModulePhysics::CollBallTerrain()
 				{
 					current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad/2;
 
-					current_ball->data->y = current_terrain->data->y;
-
 					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
 					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
 
@@ -479,7 +484,7 @@ void ModulePhysics::CollBallPlayer()
 		float P1_intersectY = abs(P1_deltaY) - ((current_ball->data->rad / 2) + (canon.canonBody.h / 2));
 
 		// Is one body inside of the other?
-		if (P1_intersectX < 0.0f && P1_intersectY < 0.0f)
+		if (P1_intersectX < 0.0f && P1_intersectY < 0.0f && !App->player->godMode)
 		{
 			canon.alive = false;
 			canon2.win = true;
@@ -491,25 +496,10 @@ void ModulePhysics::CollBallPlayer()
 		float P2_intersectY = abs(P2_deltaY) - ((current_ball->data->rad / 2) + (canon2.canonBody.h / 2));
 
 		// Is one body inside of the other?
-		if (P2_intersectX < 0.0f && P2_intersectY < 0.0f)
+		if (P2_intersectX < 0.0f && P2_intersectY < 0.0f && !App->player->godMode)
 		{
 			canon2.alive = false;
 			canon.win = true;
 
 		}
-}
-void ModulePhysics::CollBallWater()
-{
-	float P1_deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (lake.waterBody.x + lake.waterBody.w / 2);
-	float P1_deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (lake.waterBody.y + lake.waterBody.h / 2);
-	float P1_intersectX = abs(P1_deltaX) - ((current_ball->data->rad / 2) + (lake.waterBody.w / 2));
-	float P1_intersectY = abs(P1_deltaY) - ((current_ball->data->rad / 2) + (lake.waterBody.h / 2));
-
-	// Is one body inside of the other?
-	if (P1_intersectX < 0.0f && P1_intersectY < 0.0f)
-	{
-		Buoyancy(current_ball, lake.waterBody.y);
-	}
-
-
 }
