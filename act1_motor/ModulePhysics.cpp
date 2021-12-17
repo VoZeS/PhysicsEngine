@@ -24,13 +24,14 @@ bool ModulePhysics::Start()
 
 	// ----------------------------------------------------------------------------------------------- CREATE TERRAIN
 	// ----------------------------------------------------------------------------- WATER
-	//CreateTerrain(SCREEN_WIDTH / 5, SCREEN_HEIGHT - 40, SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 170, 50, 100, 0, 0.8, 0.6,
-		//100, 100, 255, 100);
-
 	lake.waterBody.x = SCREEN_WIDTH / 5;
 	lake.waterBody.y = SCREEN_HEIGHT - 240;
 	lake.waterBody.w = SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 204;
 	lake.waterBody.h = 250;
+
+	// ----------------------------------------------------------------------------- GROUND LIMIT
+	CreateTerrain(0, SCREEN_HEIGHT, SCREEN_WIDTH, 50, 100, 0, 0.5, 0.5,
+		0, 0, 255, 255);
 
 	// ----------------------------------------------------------------------------- GROUND 1
 	CreateTerrain(0, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
@@ -263,26 +264,96 @@ update_status ModulePhysics::Update()
 
 	}
 
-	// SHOOT
+	// ------------------------------------------------------------------------------------------------------------------ CHANGE WEAPONS
+	// WEAPON 1 -> SIMPLE BALL
+	// WEAPON 2 -> STICKY MINE
+	// WEAPON 3 -> ?????¿¿¿¿¿
+
+	if (App->player->playerTurn == 0 && canon.alive)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		{
+			printf("Weapon P1 - SIMPLE BALL\n");
+
+			canon.weapon1 = true;
+			canon.weapon2 = false;
+			canon.weapon3 = false;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		{
+			printf("Weapon P1 - STICKY MINE\n");
+
+			canon.weapon1 = false;
+			canon.weapon2 = true;
+			canon.weapon3 = false;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+		{
+			canon.weapon1 = false;
+			canon.weapon2 = false;
+			canon.weapon3 = true;
+		}
+	}
+	else if (App->player->playerTurn == 1 && canon2.alive)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_7) == KEY_DOWN)
+		{
+			printf("Weapon P2 - SIMPLE BALL\n");
+
+			canon2.weapon1 = true;
+			canon2.weapon2 = false;
+			canon2.weapon3 = false;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_8) == KEY_DOWN)
+		{
+			printf("Weapon P2 - STICKY MINE\n");
+
+			canon2.weapon1 = false;
+			canon2.weapon2 = true;
+			canon2.weapon3 = false;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
+		{
+			canon2.weapon1 = false;
+			canon2.weapon2 = false;
+			canon2.weapon3 = true;
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------------------------------ SHOOT
+	// --------------------------------------------------------------------- WEAPON 1 - SIMPLE BALL
 	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
 	{
-		
-		if (App->player->playerTurn == 0 && canon.alive)
+		if (App->player->playerTurn == 0 && canon.alive && canon.weapon1)
 		{
-			printf("Shot player 1\n");
-			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y, 10, 10, initialVelocity1);
+			printf("Shot player 1 - SIMPLE BULLET\n");
+			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y, 5, 10, initialVelocity1, 1, 0, 0, 0, 255);
 			App->player->playerTurn = 1;
 			printf("---------------------PLAYER'S 2 TURN---------------------\n");
 		}
-		else if (App->player->playerTurn == 1 && canon2.alive)
+		else if (App->player->playerTurn == 1 && canon2.alive && canon2.weapon1)
 		{
-			printf("Shot player 2\n");
-			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 10, 10, initialVelocity2);
+			printf("Shot player 2 - SIMPLE BULLET\n");
+			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 5, 10, initialVelocity2, 1, 0, 0, 0, 255);
 			App->player->playerTurn = 0;
 			printf("---------------------PLAYER'S 1 TURN---------------------\n");
 		}
 
-
+		// --------------------------------------------------------------------- WEAPON 1 - STICKY MINE
+		else if (App->player->playerTurn == 0 && canon.alive && canon.weapon2)
+		{
+			printf("Shot player 1 - STICKY MINE\n");
+			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y, 3, 5, initialVelocity1, 2, 255, 0, 0, 255);
+			App->player->playerTurn = 1;
+			printf("---------------------PLAYER'S 2 TURN---------------------\n");
+		}
+		else if (App->player->playerTurn == 1 && canon2.alive && canon2.weapon2)
+		{
+			printf("Shot player 2 - STICKY MINE\n");
+			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 3, 5, initialVelocity2, 2, 255, 0, 0, 255);
+			App->player->playerTurn = 0;
+			printf("---------------------PLAYER'S 1 TURN---------------------\n");
+		}
 		
 	}
 
@@ -350,30 +421,65 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-Ball* ModulePhysics::CreateBall(int x, int y, double rad, double mass, double vel)
+Ball* ModulePhysics::CreateBall(int x, int y, double rad, double mass, double vel, int weaponType, uint r, uint g, uint b, uint a)
 {
-	Ball* b = new Ball();
+	Ball* ball = new Ball();
 
-	b->x = x;
-	b->y = y;
-	b->rad = rad;
-	b->mass = mass;
+	ball->x = x;
+	ball->y = y;
+	ball->rad = rad;
+	ball->mass = mass;
+	
+	ball->weapon = weaponType;
+
+	//Aesthetics
+	ball->r = r;
+	ball->g = g;
+	ball->b = b;
+	ball->a = a;
 
 	if (App->player->playerTurn == 0)
 	{
-		b->velY = sin(canon.angle) * vel;
-		b->velX = cos(canon.angle) * vel;
+		ball->velY = sin(canon.angle) * vel;
+		ball->velX = cos(canon.angle) * vel;
 	}
 	else
 	{
-		b->velY = sin(canon2.angle) * vel;
-		b->velX = cos(canon2.angle) * vel;
+		ball->velY = sin(canon2.angle) * vel;
+		ball->velX = cos(canon2.angle) * vel;
 	}
 
-	ball_list->add(b);
+	ball_list->add(ball);
 
-	return b;
+	return ball;
 }
+
+Terrain* ModulePhysics::CreateTerrain(int x, int y, int w, int h, double mass, double vel, double restitutionX, double restitutionY, uint r, uint g, uint b, uint a)
+{
+	Terrain* t = new Terrain();
+
+	t->x = x;
+	t->y = y;
+	t->w = w;
+	t->h = h;
+	t->mass = mass;
+	t->restitutionX = restitutionX;
+	t->restitutionY = restitutionY;
+
+	//Aesthetics
+	t->r = r;
+	t->g = g;
+	t->b = b;
+	t->a = a;
+
+	t->velY = sin(canon.angle) * vel;
+	t->velX = cos(canon.angle) * vel;
+
+	terrain_list->add(t);
+
+	return t;
+}
+
 
 void ModulePhysics::CollBallTerrain()
 {
@@ -408,23 +514,50 @@ void ModulePhysics::CollBallTerrain()
 				// If so, is colliding from the RIGHT!
 				if (deltaX > 0.0f)
 				{
-					current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad/2;
+					if (current_ball->data->weapon == 1)
+					{
+						current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad / 2;
 
-					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
-					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
-					current_ball->data->physics_enabled = false;
+						current_ball->data->physics_enabled = false;
+					}
+					else if (current_ball->data->weapon == 2)
+					{
+						current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad / 2;
+
+						current_ball->data->velX = 0;
+						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
+					
 				}
 				// Is the X distance between ball's center and terrain's center --deltaX-- positive? 
 				// If NOT, is colliding from the LEFT!
 				else
 				{
-					current_ball->data->x = current_terrain->data->x - current_ball->data->rad/2;
+					if (current_ball->data->weapon == 1)
+					{
+						current_ball->data->x = current_terrain->data->x - current_ball->data->rad / 2;
 
-					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
-					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
-					current_ball->data->physics_enabled = false;
+						current_ball->data->physics_enabled = false;
+					}
+					else if (current_ball->data->weapon == 2)
+					{
+						current_ball->data->x = current_terrain->data->x - current_ball->data->rad / 2;
+
+						current_ball->data->velX = 0;
+						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
 				}
 			}
 			// Is the X intersection higher? If NOT, they are colliding UP or DOWN!
@@ -434,28 +567,53 @@ void ModulePhysics::CollBallTerrain()
 				// If so, is colliding from DOWN!
 				if (deltaY > 0.0f)
 				{
-					current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad/2;
+					if (current_ball->data->weapon == 1)
+					{
+						current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad / 2;
 
-					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
-					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
-					current_ball->data->physics_enabled = false;
+						current_ball->data->physics_enabled = false;
+					}
+					else if (current_ball->data->weapon == 2)
+					{
+						current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad / 2;
+
+						current_ball->data->velX = 0;
+						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
 
 				}
 				// Is the Y distance between ball's center and terrain's center --deltaY-- positive?
 				// If NOT, is colliding from UP!
 				else
 				{
-					current_ball->data->y = current_terrain->data->y - current_ball->data->rad/2;
+					if (current_ball->data->weapon == 1)
+					{
+						current_ball->data->y = current_terrain->data->y - current_ball->data->rad / 2;
 
-					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
-					if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
-					if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
+						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
 
-					current_ball->data->physics_enabled = false;
+						current_ball->data->physics_enabled = false;
+					}
+					else if (current_ball->data->weapon == 2)
+					{
+						current_ball->data->y = current_terrain->data->y - current_ball->data->rad / 2;
 
+						current_ball->data->velX = 0;
+						current_ball->data->velY = 0;
+
+						current_ball->data->physics_enabled = false;
+
+					}
 				}
 			}
 		}

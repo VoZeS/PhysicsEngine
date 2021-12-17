@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Application.h"
 #include "Globals.h"
+#include "ModulePlayer.h"
 #include "p2List.h"
 
 #define MIN_ANGLE -(M_PI/2) + 0.2
@@ -35,6 +36,11 @@ struct Ball
 
 	// Has physics enabled?
 	bool physics_enabled = true;
+
+	int weapon = 1;
+
+	// Aesthetics
+	uint r, g, b, a;
 };
 
 struct Player
@@ -45,6 +51,10 @@ struct Player
 
 	bool alive = true,
 		win = false;
+
+	bool weapon1 = true,
+		weapon2 = false,
+		weapon3 = false;
 };
 
 struct Terrain
@@ -205,37 +215,14 @@ public:
 	// BALL LIST
 	p2List<Ball*>* ball_list = new p2List<Ball*>();
 
-	Ball* CreateBall(int x, int y, double rad, double mass, double vel);
+	Ball* CreateBall(int x, int y, double rad, double mass, double vel, int weaponType, uint r, uint g, uint b, uint a);
 
 	p2List_item<Ball*>* current_ball;
 
 	// TERRAIN LIST
 	p2List<Terrain*>* terrain_list = new p2List<Terrain*>();
 
-	Terrain* CreateTerrain(int x, int y, int w, int h, double mass, double vel, double restitutionX, double restitutionY, uint r, uint g, uint b, uint a) {
-		Terrain* t = new Terrain();
-
-		t->x = x;
-		t->y = y;
-		t->w = w;
-		t->h = h;
-		t->mass = mass;
-		t->restitutionX = restitutionX;
-		t->restitutionY = restitutionY;
-
-		//Aesthetics
-		t->r = r;
-		t->g = g;
-		t->b = b;
-		t->a = a;
-
-		t->velY = sin(canon.angle) * vel;
-		t->velX = cos(canon.angle) * vel;
-
-		terrain_list->add(t);
-
-		return t;
-	}
+	Terrain* CreateTerrain(int x, int y, int w, int h, double mass, double vel, double restitutionX, double restitutionY, uint r, uint g, uint b, uint a);
 
 	p2List_item<Terrain*>* current_terrain;
 
