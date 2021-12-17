@@ -164,6 +164,7 @@ public:
 
 	void CollBallTerrain();
 	void CollBallPlayer();
+	void CollBallWater();
 
 	integrator inte = EULER_BACK;
 
