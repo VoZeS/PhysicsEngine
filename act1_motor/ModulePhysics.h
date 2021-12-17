@@ -161,7 +161,7 @@ public:
 
 	void Aerodynamics(p2List_item<Ball*>*& ball, int waterY)
 	{
-		float coeficientD = 0.2, density = 0.01, surface = 0;
+		float coeficientD = 0.015, density = 0.01, surface = 0;
 
 		if (ball->data->y + ball->data->rad - waterY < 0)
 		{
