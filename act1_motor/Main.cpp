@@ -2,6 +2,10 @@
 #include "Application.h"
 #include "Globals.h"
 
+#include <iostream>
+#include <chrono>
+using namespace std;
+
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
@@ -25,6 +29,11 @@ int main(int argc, char ** argv)
 
 	while (state != MAIN_EXIT)
 	{
+		float dt = 16.0; // Fixed 60fps = 16ms
+
+		//TIC
+		auto start = chrono::steady_clock::now();
+
 		switch (state)
 		{
 		case MAIN_CREATION:
@@ -80,6 +89,16 @@ int main(int argc, char ** argv)
 			break;
 
 		}
+
+		//TOC
+		auto end = chrono::steady_clock::now();
+		auto telapsed = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+		LOG("Elapsed time in milliseconds: %d", telapsed, " ms");
+		LOG("%.f", dt);
+
+		if (dt - telapsed > 0.0f)
+			Sleep(dt - telapsed);
+
 	}
 
 	delete App;
