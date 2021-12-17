@@ -24,6 +24,9 @@ bool ModuleSceneIntro::Start()
 	p2winTex = App->textures->Load("Assets/p2win.png");
 	restartTex = App->textures->Load("Assets/restart.png");
 
+	ballTex = App->textures->Load("Assets/ball.png");
+	mineTex = App->textures->Load("Assets/mine.png");
+
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	//Set wall1 body
@@ -35,13 +38,13 @@ bool ModuleSceneIntro::Start()
 	//Set PLAYER body
 	App->physics->canon.canonBody.x = 50;
 	App->physics->canon.canonBody.h = 20;
-	App->physics->canon.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+	App->physics->canon.canonBody.y = SCREEN_HEIGHT - 70 - 240;
 	App->physics->canon.canonBody.w = 20;
 
 	//Set PLAYER2 body
 	App->physics->canon2.canonBody.x = SCREEN_WIDTH - 50;
 	App->physics->canon2.canonBody.h = 20;
-	App->physics->canon2.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+	App->physics->canon2.canonBody.y = SCREEN_HEIGHT - 70 - 240;
 	App->physics->canon2.canonBody.w = 20;
 
 	screen.x = 0;
@@ -93,7 +96,31 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->DrawCircle(App->physics->current_ball->data->x, App->physics->current_ball->data->y, App->physics->current_ball->data->rad, 
 			App->physics->current_ball->data->r, App->physics->current_ball->data->g, App->physics->current_ball->data->b, App->physics->current_ball->data->a);
 
+
 		App->physics->current_ball = App->physics->current_ball->next;
+	}
+
+	// ----------------------------------------------------------------------------------------- DRAW WEAPONS
+	if (App->physics->canon.weapon1)
+	{
+		App->renderer->Blit(ballTex, 50, 50);
+
+	}
+	else if (App->physics->canon.weapon2)
+	{
+		App->renderer->Blit(mineTex, 50, 50);
+
+	}
+
+	if (App->physics->canon2.weapon1)
+	{
+		App->renderer->Blit(ballTex, SCREEN_WIDTH - 130, 50);
+
+	}
+	else if (App->physics->canon2.weapon2)
+	{
+		App->renderer->Blit(mineTex, SCREEN_WIDTH - 130, 50);
+
 	}
 
 	// ----------------------------------------------------------------------------------------- DRAW WINS

@@ -8,7 +8,7 @@
 #define MIN_ANGLE -(M_PI/2) + 0.2
 #define MAX_ANGLE -0.2
 
-#define MAX_VEL 100
+#define MAX_VEL 50
 #define MIN_VEL 15
 
 #define GRAVITY 1.0
@@ -125,7 +125,7 @@ public:
 
 	void Hydrodynamics(p2List_item<Ball*>*& ball, int waterY)
 	{
-		float coeficientD =0.1, coeficientB = 0.018, density = 0.2, surface = 0;
+		float coeficientD =0.1, coeficientB = 0.1, density = 0.2, surface = 0;
 
 		if (ball->data->y + ball->data->rad - waterY <= 0)
 		{

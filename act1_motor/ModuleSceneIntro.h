@@ -72,6 +72,8 @@ public:
 	SDL_Texture* p1winTex;
 	SDL_Texture* p2winTex;
 	SDL_Texture* restartTex;
+	SDL_Texture* ballTex;
+	SDL_Texture* mineTex;
 
 	uint fx_light_tiny;
 	uint fx_light_medium;

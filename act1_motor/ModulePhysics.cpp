@@ -34,15 +34,15 @@ bool ModulePhysics::Start()
 		0, 0, 255, 255);
 
 	// ----------------------------------------------------------------------------- GROUND 1
-	CreateTerrain(0, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
+	CreateTerrain(0, SCREEN_HEIGHT - 50 - 240, SCREEN_WIDTH / 5, 50 + 240, 1000, 0, 0.4, 0.5,
 		0, 255, 255, 255);
 
 	// ----------------------------------------------------------------------------- GROUND 2
-	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
+	CreateTerrain(SCREEN_WIDTH - SCREEN_WIDTH / 5, SCREEN_HEIGHT - 50 - 240, SCREEN_WIDTH / 5, 50 + 240, 1000, 0, 0.4, 0.5,
 		0, 255, 255, 255);
 
 	// ----------------------------------------------------------------------------- WALL
-	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200 - 200, 120, 180, 100, 0, 0.5, 1.5,
+	CreateTerrain((SCREEN_WIDTH / 2) - 60, SCREEN_HEIGHT - 200 - 240, 120, 180, 100, 0, 0.5, 1.5,
 		255, 0, 255, 255);
 
 	initialVelocity1 = MIN_VEL;
@@ -127,10 +127,18 @@ update_status ModulePhysics::Update()
 		canon2.win = false;
 
 		canon.canonBody.x = 50;
-		canon.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+		canon.canonBody.y = SCREEN_HEIGHT - 70 - 240;
 
 		canon2.canonBody.x = SCREEN_WIDTH - 50;
-		canon2.canonBody.y = SCREEN_HEIGHT - 70 - 200;
+		canon2.canonBody.y = SCREEN_HEIGHT - 70 - 240;
+
+		canon.weapon1 = true;
+		canon.weapon2 = false;
+		canon.weapon3 = false;
+
+		canon2.weapon1 = true;
+		canon2.weapon2 = false;
+		canon2.weapon3 = false;
 
 		App->player->playerTurn = 0;
 
@@ -267,7 +275,7 @@ update_status ModulePhysics::Update()
 	// ------------------------------------------------------------------------------------------------------------------ CHANGE WEAPONS
 	// WEAPON 1 -> SIMPLE BALL
 	// WEAPON 2 -> STICKY MINE
-	// WEAPON 3 -> ?????¿¿¿¿¿
+	// WEAPON 3 -> SHOT GUN
 
 	if (App->player->playerTurn == 0 && canon.alive)
 	{
@@ -289,6 +297,8 @@ update_status ModulePhysics::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
 		{
+			printf("Weapon P1 - SHOT GUN\n");
+
 			canon.weapon1 = false;
 			canon.weapon2 = false;
 			canon.weapon3 = true;
@@ -314,6 +324,8 @@ update_status ModulePhysics::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_9) == KEY_DOWN)
 		{
+			printf("Weapon P1 - SHOT GUN\n");
+
 			canon2.weapon1 = false;
 			canon2.weapon2 = false;
 			canon2.weapon3 = true;
@@ -339,7 +351,7 @@ update_status ModulePhysics::Update()
 			printf("---------------------PLAYER'S 1 TURN---------------------\n");
 		}
 
-		// --------------------------------------------------------------------- WEAPON 1 - STICKY MINE
+		// --------------------------------------------------------------------- WEAPON 2 - STICKY MINE
 		else if (App->player->playerTurn == 0 && canon.alive && canon.weapon2)
 		{
 			printf("Shot player 1 - STICKY MINE\n");
@@ -351,6 +363,26 @@ update_status ModulePhysics::Update()
 		{
 			printf("Shot player 2 - STICKY MINE\n");
 			CreateBall(canon2.canonBody.x, canon2.canonBody.y, 3, 5, initialVelocity2, 2, 255, 0, 0, 255);
+			App->player->playerTurn = 0;
+			printf("---------------------PLAYER'S 1 TURN---------------------\n");
+		}
+
+		// --------------------------------------------------------------------- WEAPON 3 - SHOT GUN
+		else if (App->player->playerTurn == 0 && canon.alive && canon.weapon3)
+		{
+			printf("Shot player 1 - SHOT GUN\n");
+			CreateBall(canon.canonBody.x + canon.canonBody.w, canon.canonBody.y + 5, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
+			CreateBall(canon.canonBody.x - 5 + canon.canonBody.w, canon.canonBody.y, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
+			CreateBall(canon.canonBody.x + 5 + canon.canonBody.w, canon.canonBody.y - 5, 4, 2, initialVelocity1, 2, 0, 255, 255, 255);
+			App->player->playerTurn = 1;
+			printf("---------------------PLAYER'S 2 TURN---------------------\n");
+		}
+		else if (App->player->playerTurn == 1 && canon2.alive && canon2.weapon3)
+		{
+			printf("Shot player 2 - SHOT GUN\n");
+			CreateBall(canon2.canonBody.x + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
+			CreateBall(canon2.canonBody.x - 5 + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
+			CreateBall(canon2.canonBody.x + 5 + canon2.canonBody.w, canon2.canonBody.y + 5, 4, 2, initialVelocity2, 2, 0, 255, 0, 255);
 			App->player->playerTurn = 0;
 			printf("---------------------PLAYER'S 1 TURN---------------------\n");
 		}
@@ -573,6 +605,9 @@ void ModulePhysics::CollBallTerrain()
 
 						current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 						current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+
+						if (current_ball->data->velY > -5 && current_ball->data->velY < 5) current_ball->data->velY = 0;
+						if (current_ball->data->velX < 0.001 && current_ball->data->velX > -0.001) current_ball->data->velX = 0;
 
 						current_ball->data->physics_enabled = false;
 					}
