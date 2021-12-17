@@ -90,7 +90,8 @@ update_status ModuleSceneIntro::Update()
 	while (App->physics->current_ball != NULL)
 	{
 
-		App->renderer->DrawCircle(App->physics->current_ball->data->x, App->physics->current_ball->data->y, 5, 0, 0, 0, 255);
+		App->renderer->DrawCircle(App->physics->current_ball->data->x, App->physics->current_ball->data->y, App->physics->current_ball->data->rad, 
+			App->physics->current_ball->data->r, App->physics->current_ball->data->g, App->physics->current_ball->data->b, App->physics->current_ball->data->a);
 
 		App->physics->current_ball = App->physics->current_ball->next;
 	}
