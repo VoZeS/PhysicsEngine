@@ -115,7 +115,7 @@ public:
 
 	void Hydrodynamics(p2List_item<Ball*>*& ball, int waterY)
 	{
-		float coeficientD = 0.1, coeficientB = 0.05, density = 0.2, surface = 0;
+		float coeficientD =0.1, coeficientB = 0.018, density = 0.2, surface = 0;
 
 		if (ball->data->y + ball->data->rad - waterY <= 0)
 		{
@@ -136,7 +136,7 @@ public:
 
 		// BUOYANCY
 		// Sign "-" to define its way
-		Fb = - coeficientB * Fgy * surface;
+		Fb =  -coeficientB * Fgy * surface;
 
 		
 
@@ -144,7 +144,7 @@ public:
 		// Sign "-" to define its way
 		if (ball->data->velX < 0)
 		{
-			FdHx = ball->data->velX * coeficientD;
+			FdHx = -ball->data->velX * coeficientD;
 		}
 		else
 		{
@@ -152,7 +152,7 @@ public:
 		}
 		if (ball->data->velY < 0)
 		{
-			FdHy = ball->data->velY * coeficientD;
+			FdHy = -ball->data->velY * coeficientD;
 		}
 		else
 		{
@@ -242,7 +242,7 @@ public:
 	void CollBallTerrain();
 	void CollBallPlayer();
 
-	integrator inte = EULER_BACK;
+	integrator inte = EULER_FOR;
 
 	double dt = 1;
 private:
