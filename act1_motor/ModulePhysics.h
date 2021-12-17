@@ -7,7 +7,7 @@
 #define MIN_ANGLE -(M_PI/2) + 0.2
 #define MAX_ANGLE -0.2
 
-#define MAX_VEL 34
+#define MAX_VEL 100
 #define MIN_VEL 15
 
 #define GRAVITY 1.0
@@ -125,18 +125,20 @@ public:
 		else
 		{
 			surface = (ball->data->y + ball->data->rad - waterY) * ball->data->rad;
-			coeficientD = 0.1;
+			
 
 			if (surface >= ball->data->rad * ball->data->rad)
 			{
 				surface = ball->data->rad * ball->data->rad;
 			}
-
+			
 		}
 
-		// BOUYANCY
+		// BUOYANCY
 		// Sign "-" to define its way
 		Fb = - coeficientB * Fgy * surface;
+
+		
 
 		// DRAG HYDRODYNAMIC
 		// Sign "-" to define its way
@@ -161,7 +163,7 @@ public:
 
 	void Aerodynamics(p2List_item<Ball*>*& ball, int waterY)
 	{
-		float coeficientD = 0.015, density = 0.01, surface = 0;
+		float coeficientD = 0.08, density = 0.01, surface = 0;
 
 		if (ball->data->y + ball->data->rad - waterY < 0)
 		{

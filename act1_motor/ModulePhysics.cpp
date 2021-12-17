@@ -76,11 +76,11 @@ update_status ModulePhysics::PreUpdate()
 			// Compute Gravity force
 		Gravity();
 			
-			// Compute HYDRODYNAMIC forces
-		Hydrodynamics(current_ball, lake.waterBody.y);
-
 			// Compute AERODYNAMIC forces
 		Aerodynamics(current_ball, lake.waterBody.y);
+
+		// Compute HYDRODYNAMIC forces
+		Hydrodynamics(current_ball, lake.waterBody.y);
 
 		// Add gravity force to the total accumulated force of the ball
 		current_ball->data->fX += (Fgx + FdHx + FdAx);
@@ -410,8 +410,8 @@ void ModulePhysics::CollBallTerrain()
 				{
 					current_ball->data->x = (current_terrain->data->x + current_terrain->data->w) + current_ball->data->rad/2;
 
-					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
 					current_ball->data->physics_enabled = false;
 				}
@@ -421,7 +421,7 @@ void ModulePhysics::CollBallTerrain()
 				{
 					current_ball->data->x = current_terrain->data->x - current_ball->data->rad/2;
 
-					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
+					current_ball->data->velX = -((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 					current_ball->data->velY = ((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
 					current_ball->data->physics_enabled = false;
@@ -436,8 +436,8 @@ void ModulePhysics::CollBallTerrain()
 				{
 					current_ball->data->y = (current_terrain->data->y + current_terrain->data->h) + current_ball->data->rad/2;
 
-					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionX;
-					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass)) * current_terrain->data->restitutionY;
+					current_ball->data->velX = ((current_ball->data->velX * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velX * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
+					current_ball->data->velY = -((current_ball->data->velY * (current_terrain->data->mass - current_ball->data->mass) + 2 * current_ball->data->velY * current_ball->data->mass) / (current_ball->data->mass + current_terrain->data->mass));
 
 					current_ball->data->physics_enabled = false;
 
