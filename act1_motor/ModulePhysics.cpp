@@ -28,9 +28,9 @@ bool ModulePhysics::Start()
 		//100, 100, 255, 100);
 
 	lake.waterBody.x = SCREEN_WIDTH / 5;
-	lake.waterBody.y = SCREEN_HEIGHT - 40;
-	lake.waterBody.w = SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 205;
-	lake.waterBody.h = 50;
+	lake.waterBody.y = SCREEN_HEIGHT - 240;
+	lake.waterBody.w = SCREEN_WIDTH - (SCREEN_WIDTH / 5) - 204;
+	lake.waterBody.h = 250;
 
 	// ----------------------------------------------------------------------------- GROUND 1
 	CreateTerrain(0, SCREEN_HEIGHT - 50 - 200, SCREEN_WIDTH / 5, 50 + 200, 1000, 0, 0.4, 0.5,
@@ -320,7 +320,7 @@ update_status ModulePhysics::PostUpdate()
 	{
 		CollBallTerrain();
 		CollBallPlayer();
-
+		CollBallWater();
 		current_ball = current_ball->next;
 	}
 	
@@ -497,4 +497,19 @@ void ModulePhysics::CollBallPlayer()
 			canon.win = true;
 
 		}
+}
+void ModulePhysics::CollBallWater()
+{
+	float P1_deltaX = (current_ball->data->x + current_ball->data->rad / 2) - (lake.waterBody.x + lake.waterBody.w / 2);
+	float P1_deltaY = (current_ball->data->y + current_ball->data->rad / 2) - (lake.waterBody.y + lake.waterBody.h / 2);
+	float P1_intersectX = abs(P1_deltaX) - ((current_ball->data->rad / 2) + (lake.waterBody.w / 2));
+	float P1_intersectY = abs(P1_deltaY) - ((current_ball->data->rad / 2) + (lake.waterBody.h / 2));
+
+	// Is one body inside of the other?
+	if (P1_intersectX < 0.0f && P1_intersectY < 0.0f)
+	{
+		Buoyancy(current_ball, lake.waterBody.y);
+	}
+
+
 }
