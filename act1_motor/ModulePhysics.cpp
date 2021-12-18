@@ -10,7 +10,7 @@
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	debug = true;
+	debug = false;
 }
 
 // Destructor
@@ -79,26 +79,12 @@ update_status ModulePhysics::PreUpdate()
 			// Compute AERODYNAMIC forces
 		Aerodynamics(current_ball, lake.waterBody.y);
 
-		// Compute HYDRODYNAMIC forces
+			// Compute HYDRODYNAMIC forces
 		Hydrodynamics(current_ball, lake.waterBody.y);
 
 		// Add gravity force to the total accumulated force of the ball and player
 		current_ball->data->fX += (Fgx + FdHx + FdAx);
 		current_ball->data->fY += (Fgy + Fb + FdHy + FdAy);
-
-		// Compute Aerodynamic Lift & Drag forces
-		/*double speed = current_ball->data->speed(current_ball->data->vx - atmosphere.windx, current_ball->data->vy - atmosphere.windy);
-		double fdrag = 0.5 * atmosphere.density * speed * speed * current_ball->data->surface * current_ball->data->cd;
-		double flift = 0.5 * atmosphere.density * speed * speed * current_ball->data->surface * current_ball->data->cl;
-		double fdx = -fdrag; // Let's assume Drag is aligned with x-axis (in your game, generalize this)
-		double fdy = flift; // Let's assume Lift is perpendicular with x-axis (in your game, generalize this)*/
-
-		// Add gravity force to the total accumulated force of the ball
-		/*current_ball->data->fX += fdX;
-		current_ball->data->fX += fdY;*/
-
-		// Other forces
-		// ...
 
 		current_ball = current_ball->next;
 	}
@@ -147,18 +133,18 @@ update_status ModulePhysics::Update()
 	}
 
 	// Set Integrator
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN && debug)
 	{
 		inte = EULER_BACK;
 		printf("Integrator: EULER_BACK\n");
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN && debug)
 	{
 		inte = EULER_FOR;
 		printf("Integrator: EULER_FOR\n");
 	}
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && debug)
 	{
 		inte = VELOCITY_VERLET;
 		printf("Integrator: VELOCITY_VERLET\n");
@@ -436,6 +422,15 @@ update_status ModulePhysics::PostUpdate()
 
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
+
+	// SET GOD MODE
+	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && debug)
+	{
+		if (!App->player->godMode)
+			App->player->godMode = true;
+		else
+			App->player->godMode = false;
+	}
 
 	if (!debug)
 		return UPDATE_CONTINUE;

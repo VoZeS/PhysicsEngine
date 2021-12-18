@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "ModulePlayer.h"
 #include "PhysBody.h"
+#include "ModulePhysics.h"
 
 ModulePlayer::ModulePlayer(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -66,14 +67,6 @@ update_status ModulePlayer::Update()
 		}
 	}
 
-	// SET GOD MODE
-	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN)
-	{
-		if (!godMode)
-			godMode = true;
-		else
-			godMode = false;
-	}
 	return UPDATE_CONTINUE;
 }
 
