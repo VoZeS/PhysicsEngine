@@ -23,10 +23,15 @@ This games works in turns. The flow between turns is automatic and it is done af
 * SpaceBar: Shoot
   
 ## DEBUG FEATURES:
-Activate the Debug mode to change between integrators and activate the God Mode to be inmortal.
+Activate the Debug mode to change between integrators, enable/disable forces, change DeltaTime and activate the God Mode to be inmortal.
 
   * F1: Activate/disable Debug Mode
-  * F5: Activate/disable God Mode
+  * F2: Enable/Disable Gravity
+  * F3: Enable/Disable Hydrodynamic Drag
+  * F4: Enable/Disable Bouyancy
+  * F5: Enable/Disable Aerodynamic Drag
+  * F6: Activate/disable God Mode
+  * F7: Change DeltaTime (60fps to 30fps, and vice versa)
   * 1: Change to Euler Backwards Integrator
   * 2: Change to Euler Forwards Integrator
   * 3: Change to Velocity Verlet Integrator

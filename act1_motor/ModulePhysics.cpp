@@ -477,7 +477,7 @@ update_status ModulePhysics::PostUpdate()
 			App->player->godMode = false;
 	}
 
-	// CHANGE FROM 60fps TO 30fps AND INVERSE
+	// CHANGE FROM 60fps TO 30fps AND VICE VERSA
 	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN && debug)
 	{
 		if (!sixtyFpsEnabled)
