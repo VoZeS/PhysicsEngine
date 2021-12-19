@@ -29,7 +29,7 @@ int main(int argc, char ** argv)
 
 	while (state != MAIN_EXIT)
 	{
-		float dt = 16.0; // Fixed 60fps = 16ms
+		float dt = 16.0; // 60fps = 16ms
 
 		//TIC
 		auto start = chrono::steady_clock::now();
@@ -91,6 +91,17 @@ int main(int argc, char ** argv)
 		}
 
 		//TOC
+
+		if (App->physics->sixtyFpsEnabled)
+		{
+			dt = 16.0;
+		}
+		else
+		{
+			dt = 33.0; // 30fps = 33ms
+
+		}
+
 		auto end = chrono::steady_clock::now();
 		auto telapsed = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 		LOG("Elapsed time in milliseconds: %d", telapsed, " ms");

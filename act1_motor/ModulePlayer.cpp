@@ -15,6 +15,9 @@ ModulePlayer::~ModulePlayer()
 bool ModulePlayer::Start()
 {
 	LOG("Loading player");
+
+	godMode = false;
+
 	return true;
 }
 

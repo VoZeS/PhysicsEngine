@@ -94,6 +94,12 @@ public:
 	double FdHx = 0, FdHy = 0, Fb = 0; // HYDRODYNAMIC FORCES (DRAG AND BOUYANCY)
 	double FdAx = 0, FdAy = 0; // AERODYNAMIC FORCES (DRAG)
 
+	bool gravityEnabled = true,
+		hydrodynamicDragEnabled = true, bouyancyEnabled = true,
+		aerodynamicDragEnabled = true;
+
+	bool sixtyFpsEnabled = true;
+
 	void EulerBWDIntegrator(p2List_item<Ball*>* &ball, double dt)
 	{
 		ball->data->x += ball->data->velX * dt;
@@ -119,8 +125,16 @@ public:
 
 	void Gravity()
 	{
-		Fgx = current_ball->data->mass * 0.0;
-		Fgy = current_ball->data->mass * GRAVITY; // Let's assume gravity is constant and downwards
+		if (gravityEnabled)
+		{
+			Fgx = current_ball->data->mass * 0.0;
+			Fgy = current_ball->data->mass * GRAVITY; // Let's assume gravity is constant and downwards
+		}
+		else
+		{
+			Fgx = 0;
+			Fgy = 0;
+		}
 	}
 
 	void Hydrodynamics(p2List_item<Ball*>*& ball, int waterY)
@@ -146,27 +160,42 @@ public:
 
 		// BUOYANCY
 		// Sign "-" to define its way
-		Fb =  -coeficientB * Fgy * surface;
+		if (bouyancyEnabled)
+		{
+			Fb = -coeficientB * Fgy * surface;
 
+		}
+		else
+		{
+			Fb = 0;
+		}
 		
 
 		// DRAG HYDRODYNAMIC
 		// Sign "-" to define its way
-		if (ball->data->velX < 0)
+		if (hydrodynamicDragEnabled)
 		{
-			FdHx = -ball->data->velX * coeficientD;
+			if (ball->data->velX < 0)
+			{
+				FdHx = -ball->data->velX * coeficientD;
+			}
+			else
+			{
+				FdHx = -ball->data->velX * coeficientD;
+			}
+			if (ball->data->velY < 0)
+			{
+				FdHy = -ball->data->velY * coeficientD;
+			}
+			else
+			{
+				FdHy = -ball->data->velY * coeficientD;
+			}
 		}
 		else
 		{
-			FdHx = -ball->data->velX * coeficientD;
-		}
-		if (ball->data->velY < 0)
-		{
-			FdHy = -ball->data->velY * coeficientD;
-		}
-		else
-		{
-			FdHy = -ball->data->velY * coeficientD;
+			FdHx = 0;
+			FdHy = 0;
 		}
 
 	}
@@ -187,21 +216,29 @@ public:
 
 		// DRAG AERODYNAMIC
 		// Sign "-" to define its way
-		if (ball->data->velX < 0)
+		if (aerodynamicDragEnabled)
 		{
-			FdAx = 0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+			if (ball->data->velX < 0)
+			{
+				FdAx = 0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+			}
+			else
+			{
+				FdAx = -0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
+			}
+			if (ball->data->velY < 0)
+			{
+				FdAy = 0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+			}
+			else
+			{
+				FdAy = -0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+			}
 		}
 		else
 		{
-			FdAx = -0.5 * density * (ball->data->velX * ball->data->velX) * surface * coeficientD;
-		}
-		if (ball->data->velY < 0)
-		{
-			FdAy = 0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
-		}
-		else
-		{
-			FdAy = -0.5 * density * (ball->data->velY * ball->data->velY) * surface * coeficientD;
+			FdAx = 0;
+			FdAy = 0;
 		}
 	}
 

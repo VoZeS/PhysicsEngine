@@ -57,6 +57,14 @@ bool ModulePhysics::Start()
 	canon.win = false;
 	canon2.win = false;
 
+	gravityEnabled = true;
+	hydrodynamicDragEnabled = true;
+	bouyancyEnabled = true;
+	aerodynamicDragEnabled = true;
+	debug = false;
+
+	sixtyFpsEnabled = true;
+
 	return true;
 }
 
@@ -319,7 +327,7 @@ update_status ModulePhysics::Update()
 
 	// ------------------------------------------------------------------------------------------------------------------ SHOOT
 	// --------------------------------------------------------------------- WEAPON 1 - SIMPLE BALL
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_M) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		if (App->player->playerTurn == 0 && canon.alive && canon.weapon1)
 		{
@@ -420,16 +428,62 @@ update_status ModulePhysics::PostUpdate()
 	angle1INT = canon.angle * 180 / M_PI;
 	angle2INT = canon2.angle * 180 / M_PI + 180;
 
+	// ------------------------------------------------------------------------------------- DEBUG KEYS
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-	// SET GOD MODE
+	// ENABLE/DISABLE GRAVITY
+	if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN && debug)
+	{
+		if (!gravityEnabled)
+			gravityEnabled = true;
+		else
+			gravityEnabled = false;
+	}
+
+	// ENABLE/DISABLE HYDRODYNAMIC DRAG
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN && debug)
+	{
+		if (!hydrodynamicDragEnabled)
+			hydrodynamicDragEnabled = true;
+		else
+			hydrodynamicDragEnabled = false;
+	}
+
+	// ENABLE/DISABLE BOUYANCY
+	if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN && debug)
+	{
+		if (!bouyancyEnabled)
+			bouyancyEnabled = true;
+		else
+			bouyancyEnabled = false;
+	}
+
+	// ENABLE/DISABLE AERODYNAMIC DRAG
 	if (App->input->GetKey(SDL_SCANCODE_F5) == KEY_DOWN && debug)
+	{
+		if (!aerodynamicDragEnabled)
+			aerodynamicDragEnabled = true;
+		else
+			aerodynamicDragEnabled = false;
+	}
+
+	// SET GOD MODE
+	if (App->input->GetKey(SDL_SCANCODE_F6) == KEY_DOWN && debug)
 	{
 		if (!App->player->godMode)
 			App->player->godMode = true;
 		else
 			App->player->godMode = false;
+	}
+
+	// CHANGE FROM 60fps TO 30fps AND INVERSE
+	if (App->input->GetKey(SDL_SCANCODE_F7) == KEY_DOWN && debug)
+	{
+		if (!sixtyFpsEnabled)
+			sixtyFpsEnabled = true;
+		else
+			sixtyFpsEnabled = false;
 	}
 
 	if (!debug)
